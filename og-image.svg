@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0F2744"/>
+      <stop offset="100%" style="stop-color:#1a3a6e"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+
+  <!-- Gold top bar -->
+  <rect width="1200" height="10" fill="#FFD700"/>
+
+  <!-- Gold bottom bar -->
+  <rect y="620" width="1200" height="10" fill="#FFD700"/>
+
+  <!-- Decorative circle -->
+  <circle cx="1100" cy="530" r="180" fill="rgba(255,255,255,0.04)"/>
+  <circle cx="100"  cy="100" r="120" fill="rgba(255,255,255,0.04)"/>
+
+  <!-- Main heading -->
+  <text x="600" y="220"
+    font-family="'Heebo','Arial',sans-serif"
+    font-size="72" font-weight="900"
+    fill="#FFFFFF"
+    text-anchor="middle"
+    direction="rtl">&#x05E1;&#x05D9;&#x05DE;&#x05D5;&#x05DC;&#x05D8;&#x05D5;&#x05E8; &#x05D4;&#x05D7;&#x05D6;&#x05E8; &#x05DE;&#x05E1; &#x05DC;&#x05E9;&#x05DB;&#x05D9;&#x05E8;&#x05D9;&#x05DD;</text>
+
+  <!-- Sub heading -->
+  <text x="600" y="305"
+    font-family="'Heebo','Arial',sans-serif"
+    font-size="36" font-weight="700"
+    fill="#FFD700"
+    text-anchor="middle"
+    direction="rtl">&#x05D1;&#x05D3;&#x05D5;&#x05E7; &#x05D7;&#x05D9;&#x05E0;&#x05DD; &#x05DB;&#x05DE;&#x05D4; &#x05DE;&#x05D2;&#x05D9;&#x05E2; &#x05DC;&#x05DA; &#x2014; &#x05E9;&#x05E0;&#x05D9;&#x05DD; 2020&#x2013;2025</text>
+
+  <!-- Divider -->
+  <line x1="200" y1="340" x2="1000" y2="340" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+
+  <!-- Feature pills -->
+  <rect x="160" y="365" width="240" height="50" rx="25" fill="rgba(255,255,255,0.1)"/>
+  <text x="280" y="397" font-family="'Heebo','Arial',sans-serif" font-size="22" fill="#B4D2FF" text-anchor="middle" direction="rtl">&#x05DC;&#x05DC;&#x05D0; &#x05D4;&#x05E8;&#x05E9;&#x05DE;&#x05D4;</text>
+
+  <rect x="480" y="365" width="240" height="50" rx="25" fill="rgba(255,255,255,0.1)"/>
+  <text x="600" y="397" font-family="'Heebo','Arial',sans-serif" font-size="22" fill="#B4D2FF" text-anchor="middle" direction="rtl">&#x05EA;&#x05D5;&#x05E6;&#x05D0;&#x05D4; &#x05DE;&#x05D9;&#x05D9;&#x05D3;&#x05D9;&#x05EA;</text>
+
+  <rect x="800" y="365" width="240" height="50" rx="25" fill="rgba(255,255,255,0.1)"/>
+  <text x="920" y="397" font-family="'Heebo','Arial',sans-serif" font-size="22" fill="#B4D2FF" text-anchor="middle" direction="rtl">OCR &#x05DE;&#x05E7;&#x05D5;&#x05DE;&#x05D9;</text>
+
+  <!-- Domain -->
+  <text x="600" y="490"
+    font-family="'Arial',sans-serif"
+    font-size="26"
+    fill="rgba(180,210,255,0.7)"
+    text-anchor="middle">simulator-mas.co.il</text>
+
+  <!-- Tax icon -->
+  <text x="600" y="570"
+    font-family="'Arial',sans-serif"
+    font-size="22"
+    fill="rgba(255,215,0,0.6)"
+    text-anchor="middle">&#x20AA; Barshaf Tax Consulting</text>
+</svg>
