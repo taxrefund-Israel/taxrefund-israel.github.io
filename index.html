@@ -408,12 +408,13 @@ document.addEventListener('DOMContentLoaded',()=>A11y.init());
 })();
 
 const TAX={
-  2025:{cp:3012,br:[[84480,.10],[120960,.14],[193800,.20],[269760,.31],[561360,.35],[Infinity,.47]],prov:true},
-  2024:{cp:2904,br:[[81480,.10],[116760,.14],[187440,.20],[260520,.31],[542160,.35],[Infinity,.47]]},
-  2023:{cp:2820,br:[[79560,.10],[113880,.14],[182880,.20],[254160,.31],[528720,.35],[Infinity,.47]]},
-  2022:{cp:2736,br:[[77400,.10],[110880,.14],[177480,.20],[247440,.31],[514920,.35],[Infinity,.47]]},
-  2021:{cp:2652,br:[[75480,.10],[108120,.14],[173880,.20],[241560,.31],[502920,.35],[Infinity,.47]]},
-  2020:{cp:2616,br:[[74880,.10],[107400,.14],[172320,.20],[239520,.31],[498360,.35],[Infinity,.47]]},
+  // מדרגות מס להכנסה מיגיעה אישית — מקור: כל זכות (אומת מהפרסומים הרשמיים)
+  2025:{cp:3012,br:[[84120,.10],[120720,.14],[193800,.20],[269280,.31],[560280,.35],[721560,.47],[Infinity,.50]]},
+  2024:{cp:2904,br:[[84120,.10],[120720,.14],[193800,.20],[269280,.31],[560280,.35],[721560,.47],[Infinity,.50]]},
+  2023:{cp:2820,br:[[81480,.10],[116760,.14],[187440,.20],[260520,.31],[542160,.35],[698280,.47],[Infinity,.50]]},
+  2022:{cp:2736,br:[[77400,.10],[110880,.14],[178080,.20],[247440,.31],[514920,.35],[663240,.47],[Infinity,.50]]},
+  2021:{cp:2652,br:[[75480,.10],[108360,.14],[173880,.20],[241680,.31],[502920,.35],[647640,.47],[Infinity,.50]]},
+  2020:{cp:2616,br:[[75960,.10],[108960,.14],[174960,.20],[243120,.31],[505920,.35],[651600,.47],[Infinity,.50]]},
 };
 // תקרת הפרשה מזכה לחישוב זיכוי פנסיה עובד 35% (סעיף 45א) – מקור: כל זכות
 // הזיכוי = 35% × min(הפרשה, 7%×שכר, תקרה שנתית)
@@ -748,22 +749,43 @@ function parseDoc(text,filename){
     R.documentType='106';
     const em=text.match(/(\S+(?:\s+\S+){0,3})\s+(?:בע"מ|בעמ|pixellot|פיקסלוט)/i);
     if(em)R.employerName=em[0].trim().substring(0,40);
-    for(const line of text.split('\n')){
-      const nums=(line.match(/[\d,]+/g)||[]).map(pN).filter(n=>n>0);
-      if(!R.grossIncome&&(/172|158/.test(line)||/משכורת\s+ותשלומים/.test(line))){
-        const big=nums.filter(n=>n>10000);if(big.length)R.grossIncome=Math.max(...big);}
-      if(!R.taxWithheld&&/042/.test(line)){
-        const c=nums.filter(n=>n>1000&&n<300000);if(c.length)R.taxWithheld=c[0];}
-      if(!R.pensionEmployee&&(/045|086/.test(line)||/קצבה\s+מקיפה\s+כעמית/.test(line))){
-        const c=nums.filter(n=>n>500&&n<100000);if(c.length)R.pensionEmployee=c[0];}
-      if(/קופ.?ג\s+לקצב/.test(line)){
-        const c=nums.filter(n=>n>3000&&n<80000);
-        if(c.length)R.pensionEmployer+=c[c.length-1];}
-      if(!R.eduFundEmployer&&/קרן\s+השתלמות/.test(line)){
-        const c=nums.filter(n=>n>1000&&n<80000);
-        if(c.length>=2){R.eduFundEmployer=c[c.length-2];R.eduFundEmployee=Math.round(R.eduFundEmployer/3);}
-        else if(c.length===1){R.eduFundEmployer=c[0];R.eduFundEmployee=Math.round(c[0]/3);}
+    // קודי סעיפים שאסור לפרש כסכומים
+    const SEC_CODES=new Set([42,45,47,86,158,172,169,50,51,52,243,244]);
+    const lns=text.split('\n');
+    // חיפוש סכום בשורה נוכחית + עד 2 שורות הבאות, תוך סינון קודי סעיפים
+    function amtNear(i,minV,maxV){
+      for(let j=i;j<Math.min(i+3,lns.length);j++){
+        const ns=(lns[j].match(/[\d,]+/g)||[]).map(pN)
+          .filter(n=>n>=minV&&n<=maxV&&!SEC_CODES.has(n));
+        if(ns.length)return Math.max(...ns);
+      }return 0;
+    }
+    for(let i=0;i<lns.length;i++){
+      const line=lns[i];
+      // הכנסה ברוטו — סעיף 158 או 172 (גבול תחתון 5,000 למניעת טעות עם קוד הסעיף)
+      if(!R.grossIncome&&(/\b(172|158)\b/.test(line)||/משכורת\s*ותשלומים/.test(line))){
+        const v=amtNear(i,5000,2000000);if(v)R.grossIncome=v;}
+      // מס שנוכה — סעיף 042
+      if(!R.taxWithheld&&/\b0?42\b/.test(line)){
+        const v=amtNear(i,100,800000);if(v)R.taxWithheld=v;}
+      // פנסיה עובד — סעיף 045 / 086
+      if(!R.pensionEmployee&&(/\b0?45\b|\b086\b/.test(line)||/קצבה\s*מקיפה\s*כעמית/.test(line))){
+        const v=amtNear(i,200,200000);if(v)R.pensionEmployee=v;}
+      // פנסיה מעסיק — קופ"ג לקצבה
+      if(/קופ.?ג\s*לקצב/.test(line)){
+        const ns=(lns[i].match(/[\d,]+/g)||[]).map(pN).filter(n=>n>3000&&n<80000&&!SEC_CODES.has(n));
+        if(ns.length)R.pensionEmployer+=ns[ns.length-1];}
+      // קרן השתלמות
+      if(!R.eduFundEmployer&&/קרן\s*השתלמות/.test(line)){
+        const ns=(lns[i].match(/[\d,]+/g)||[]).map(pN).filter(n=>n>500&&n<80000&&!SEC_CODES.has(n));
+        if(ns.length>=2){R.eduFundEmployer=ns[ns.length-2];R.eduFundEmployee=Math.round(R.eduFundEmployer/3);}
+        else if(ns.length===1){R.eduFundEmployer=ns[0];R.eduFundEmployee=Math.round(ns[0]/3);}
       }
+    }
+    // fallback: אם לא נמצאה הכנסה — חפש את המספר הגבוה ביותר מעל 10,000 בכל המסמך
+    if(!R.grossIncome){
+      const allNums=(text.match(/[\d,]+/g)||[]).map(pN).filter(n=>n>10000&&n<2000000&&!SEC_CODES.has(n));
+      if(allNums.length)R.grossIncome=Math.max(...allNums);
     }
   }else if(isBTL||isUnemp){
     R.documentType='bituach_leumi';
