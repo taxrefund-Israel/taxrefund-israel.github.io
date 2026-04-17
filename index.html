@@ -762,9 +762,9 @@ function parseDoc(text,filename){
     }
     for(let i=0;i<lns.length;i++){
       const line=lns[i];
-      // הכנסה ברוטו — סעיף 158 או 172 (גבול תחתון 5,000 למניעת טעות עם קוד הסעיף)
+      // הכנסה ברוטו — סעיף 158 או 172
       if(!R.grossIncome&&(/\b(172|158)\b/.test(line)||/משכורת\s*ותשלומים/.test(line))){
-        const v=amtNear(i,5000,2000000);if(v)R.grossIncome=v;}
+        const v=amtNear(i,1,2000000);if(v)R.grossIncome=v;}
       // מס שנוכה — סעיף 042
       if(!R.taxWithheld&&/\b0?42\b/.test(line)){
         const v=amtNear(i,100,800000);if(v)R.taxWithheld=v;}
