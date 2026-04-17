@@ -91,6 +91,11 @@ h2.stitle{font-size:20px;font-weight:900;color:#0F2744;margin-bottom:4px}
 .tbar{height:3px;width:44px;background:#C4970E;border-radius:2px;margin-bottom:18px}
 .sectitle{font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#1B4F8A;border-bottom:2px solid #EBF3FB;padding-bottom:5px;margin:16px 0 12px}
 .lbl{display:block;font-size:13px;font-weight:700;color:#374151;margin-bottom:5px}
+.tip-wrap{position:relative;display:inline-block;margin-right:5px;vertical-align:middle}
+.tip-btn{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;background:#94A3B8;color:#fff;font-size:10px;font-weight:900;cursor:pointer;border:none;padding:0;line-height:1;user-select:none}
+.tip-btn:hover+.tip-box,.tip-btn:focus+.tip-box,.tip-btn.open+.tip-box{display:block}
+.tip-box{display:none;position:absolute;right:0;top:22px;width:220px;background:#1E293B;color:#F1F5F9;font-size:12px;font-weight:400;line-height:1.5;padding:9px 11px;border-radius:8px;z-index:100;box-shadow:0 4px 16px rgba(0,0,0,.25)}
+.tip-box::before{content:'';position:absolute;top:-6px;right:5px;border:6px solid transparent;border-bottom-color:#1E293B;border-top:none}
 .sub{font-size:11px;color:#6B7280;margin-bottom:5px;margin-top:-3px;display:block;line-height:1.4}
 .inp{width:100%;padding:12px;border:1.5px solid #D1D5DB;border-radius:9px;font-family:'Heebo',sans-serif;font-size:16px;direction:rtl;outline:none;color:#111827;background:#fff;transition:border .2s}
 .inp:focus{border-color:#1B4F8A;box-shadow:0 0 0 3px rgba(27,79,138,.12)}
@@ -947,7 +952,9 @@ ${S.marital==='married'?`<label class="chk" style="margin-bottom:12px"><input ty
   oninput="if(!this.value.trim()){S.periphery='';render();}">
 <datalist id="periph-dl">${PERIPH.filter(s=>periphRate(s,S.taxYear)>0).map(s=>`<option value="${s.n}">${s.n} (${periphRate(s,S.taxYear)}%)</option>`).join('')}</datalist></div>
 <div class="sectitle">ילדים</div>
-<div class="fr"><label class="lbl">מספר ילדים מתחת לגיל 18</label>
+<div class="fr"><label class="lbl">מספר ילדים מתחת לגיל 18
+<span class="tip-wrap"><button class="tip-btn" type="button" onclick="this.classList.toggle('open')" onblur="this.classList.remove('open')">?</button><span class="tip-box">יש להזין את גיל הילד בשנת המס הנבדקת. לדוגמה: אם הילד חגג יום הולדת 3 במהלך אותה שנה — יש להזין 3.</span></span>
+</label>
 <select class="sel" onchange="S.numKids=+this.value;S.kidsAges=Array.from({length:S.numKids},(_,i)=>S.kidsAges[i]||'');render()">
 ${[...Array(12)].map((_,i)=>`<option value="${i}"${S.numKids===i?'selected':''}>${i||'אין ילדים'}</option>`).join('')}</select></div>
 ${S.numKids?`<div class="fr"><label class="lbl">גיל כל ילד</label><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:8px">${kids}</div></div>`:''}
