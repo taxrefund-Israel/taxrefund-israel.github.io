@@ -377,7 +377,7 @@ html.gs-mode{filter:grayscale(100%)}
 </footer>
 
 <!-- Scripts -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" integrity="sha384-/1qUCSGwTur9vjf/z9lmu/eCUYbpOTgSjmpbMQZ1/CtX2v/WcAIKqRv+U1DUCG6e" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 
 <!-- ── Accessibility widget JS ── -->
@@ -684,7 +684,24 @@ const fmt=n=>new Intl.NumberFormat('he-IL',{style:'currency',currency:'ILS',maxi
 const fmtN=n=>new Intl.NumberFormat('he-IL').format(Math.round(n));
 const pct=r=>`${(r*100).toFixed(0)}%`;
 const pN=s=>{if(!s)return 0;return parseFloat(String(s).replace(/[,\s]/g,''))||0;};
+const esc=s=>String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');
 
+// מס ייסף: 3% על הכנסה כוללת מעל התקרה + 2% נוסף על הכנסות הוניות (מ-2025)
+// תקרה = תחילת מדרגת 47% (נגזר אוטומטית מטבלת המדרגות)
+function calcSurtax(regularInc,capitalInc,yr){
+  const {br}=TAX[yr]||TAX[2024];
+  const threshold=br[br.length-2][0]; // תחילת מדרגת 47%
+  const total=regularInc+(capitalInc||0);
+  const above=Math.max(0,total-threshold);
+  if(!above)return{regularSurtax:0,capitalSurtax:0,surtaxTotal:0,threshold};
+  const regularSurtax=Math.round(above*0.03);
+  let capitalSurtax=0;
+  if(yr>=2025&&capitalInc>0){
+    const capitalAbove=Math.min(capitalInc,above);
+    capitalSurtax=Math.round(capitalAbove*0.02);
+  }
+  return{regularSurtax,capitalSurtax,surtaxTotal:regularSurtax+capitalSurtax,threshold,above};
+}
 function calcTax(inc,yr){const{br}=TAX[yr]||TAX[2024];let t=0,p=0;for(const[mx,rt]of br){if(inc<=p)break;const u=mx===Infinity?inc:mx;t+=(Math.min(inc,u)-p)*rt;p=u;if(inc<=p)break;}return Math.max(0,Math.round(t));}
 function calcBr(inc,yr){const{br}=TAX[yr]||TAX[2024];const r=[];let p=0;for(const[mx,rt]of br){if(inc<=p)break;const u=mx===Infinity?inc:mx;const tx=Math.min(inc,u)-p;if(tx>0)r.push({from:p,to:u,rate:rt,tx,tax:Math.round(tx*rt)});p=u;if(inc<=p)break;}return r;}
 // נקודות זיכוי בגין ילד לפי גיל, מין הורה ושנת המס
@@ -717,7 +734,7 @@ function calcCP(g,m,sp,ni,ages,degPts,spNI,yr){let p=2.25;
   if(ni)p+=1;if(degPts>0)p+=degPts;if(m==='married'&&spNI)p+=2.25;
   return Math.round(p*100)/100;}
 // perCr = זיכוי ישיר מישוב מזכה (₪, לא נקודות)
-function calcOne(gross,withheld,penEmp,penEmplr,eduEmp,eduEmplr,cpPts,yr,perCr){
+function calcOne(gross,withheld,penEmp,penEmplr,eduEmp,eduEmplr,cpPts,yr,perCr,capital102=0){
   const cfg=TAX[yr]||TAX[2024];
   // קרן השתלמות שכיר אינה מפחיתה הכנסה חייבת
   const taxable=gross,grossTax=calcTax(taxable,yr);
@@ -726,10 +743,16 @@ function calcOne(gross,withheld,penEmp,penEmplr,eduEmp,eduEmplr,cpPts,yr,perCr){
   const peb=Math.min(penEmp,gross*.07,penMaxAnn),pec=Math.round(peb*.35);
   // פנסיה מעסיק — אינה מזכה בהטבת מס לשכיר
   const periph=Math.round(perCr||0);
-  const net=Math.max(0,grossTax-cpC-pec-periph);
+  // סעיף 102 הוני — מס 25% שטוח
+  const cap102=Math.round(capital102||0);
+  const cap102Tax=Math.round(cap102*0.25);
+  // מס ייסף על הכנסה כוללת
+  const st=calcSurtax(gross,cap102,yr);
+  const net=Math.max(0,grossTax+cap102Tax+st.surtaxTotal-cpC-pec-periph);
   return{gross,taxable,withheld,grossTax,cpPts,cpValue:cfg.cp,
     cpCredit:cpC,penEmp,penEmpBase:peb,penEmpCr:pec,
-    periphCr:periph,netTax:net,refund:Math.round(withheld-net),brackets:calcBr(taxable,yr)};}
+    periphCr:periph,cap102,cap102Tax,surtax:st,
+    netTax:net,refund:Math.round(withheld-net),brackets:calcBr(taxable,yr)};}
 function degCredit(type,gy,hasInt,intEnd,ty){
   if(!gy||type==='none')return 0;
   const g=parseInt(gy),t=parseInt(ty);let base=g+1;
@@ -782,7 +805,7 @@ async function extractImgText(file){
 
 function parseDoc(text,filename){
   const R={documentType:'other',employerName:'',taxYear:0,
-    grossIncome:0,taxWithheld:0,pensionEmployee:0,pensionEmployer:0,
+    grossIncome:0,taxWithheld:0,pensionEmployee:0,pensionEmployer:0,capital102:0,
     eduFundEmployee:0,eduFundEmployer:0,source:filename};
   // Normalize for detection: collapse spaces between same-type adjacent chars (handles char-by-char PDFs)
   const norm=text.replace(/\n/g,' ')
@@ -828,6 +851,10 @@ function parseDoc(text,filename){
         const ns=(lns[i].match(/[\d,]+/g)||[]).map(pN).filter(n=>n>500&&n<80000&&!SEC_CODES.has(n));
         if(ns.length>=2){R.eduFundEmployer=ns[ns.length-2];R.eduFundEmployee=Math.round(R.eduFundEmployer/3);}
         else if(ns.length===1){R.eduFundEmployer=ns[0];R.eduFundEmployee=Math.round(ns[0]/3);}
+      }
+      // סעיף 102 מסלול הוני — מס 25% שטוח
+      if(!R.capital102&&(/102\s*הוני|הוני\s*102|מניות.*102|102.*מניות|אופציות.*הוני|הוני.*אופציות|מימוש\s*מניות/.test(line))){
+        const v=amtNear(i,100,5000000);if(v)R.capital102=v;
       }
     }
     // fallback: אם לא נמצאה הכנסה — חפש את המספר הגבוה ביותר מעל 10,000 בכל המסמך
@@ -882,15 +909,15 @@ async function analyse(){
   await new Promise(r=>setTimeout(r,200));
   const ok=extracted.filter(d=>d.ok);
   if(!ok.length){merge({err:'לא הצלחתי לחלץ נתונים. נסה PDF ברזולוציה גבוהה.',step:1});return;}
-  let gross=0,withheld=0,penEmp=0,penEmplr=0,eduEmp=0,eduEmplr=0;
-  for(const d of ok){gross+=d.grossIncome||0;withheld+=d.taxWithheld||0;penEmp+=d.pensionEmployee||0;penEmplr+=d.pensionEmployer||0;eduEmp+=d.eduFundEmployee||0;eduEmplr+=d.eduFundEmployer||0;}
+  let gross=0,withheld=0,penEmp=0,penEmplr=0,eduEmp=0,eduEmplr=0,capital102=0;
+  for(const d of ok){gross+=d.grossIncome||0;withheld+=d.taxWithheld||0;penEmp+=d.pensionEmployee||0;penEmplr+=d.pensionEmployer||0;eduEmp+=d.eduFundEmployee||0;eduEmplr+=d.eduFundEmployer||0;capital102+=d.capital102||0;}
   if(!gross){merge({err:'לא נמצאה הכנסה. ודא שהועלה טופס 106 תקין.',step:1});return;}
-  addLog(`✔ סה"כ הכנסה: ${fmtN(gross)} ₪`,'ok');
+  addLog(`✔ סה"כ הכנסה: ${fmtN(gross)} ₪`+(capital102?` | 102 הוני: ${fmtN(capital102)} ₪`:''),'ok');
   const yr=S.taxYear,isM=S.marital==='married';
   const degPts=degCredit(S.degree,S.degreeGradYear,S.degreeHasInternship,S.degreeInternshipEnd,yr);
   const sp1Pts=calcCP(S.gender,S.marital,S.singlePar,S.newImm,S.kidsAges,degPts,isM&&S.spouseNoIncome,yr);
   const perCr=S.periphery?periphCredit(S.periphery,gross,yr):0;
-  const sp1=calcOne(gross,withheld,penEmp,penEmplr,eduEmp,eduEmplr,sp1Pts,yr,perCr);
+  const sp1=calcOne(gross,withheld,penEmp,penEmplr,eduEmp,eduEmplr,sp1Pts,yr,perCr,capital102);
   const calcMode=isM?(S.spouseNoIncome?'joint':'separate'):'single';
   const cfg=TAX[yr]||TAX[2024];
   const dl={none:'',bachelor:'תואר ראשון',master:'תואר שני',medicine:'רפואה',phd:'דוקטורט',vocational:'תעודת מקצוע',teaching:'תעודת הוראה'};
@@ -1072,9 +1099,9 @@ function r3(){
   const docsS=S.parsed.length?`<div class="calc-card" style="padding:0;overflow:hidden"><div style="padding:11px 13px;background:#F8FAFC;border-bottom:1px solid #E2E8F0;font-size:13px;font-weight:800;color:#0F2744">מסמכים שנותחו</div><div style="padding:10px 13px">${S.parsed.map(d=>`<div style="padding:8px 10px;background:${d.ok?'#F8FAFC':'#FEF2F2'};border:1px solid ${d.ok?'#E2E8F0':'#FECACA'};border-radius:9px;margin-bottom:7px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:5px;align-items:center"><div style="display:flex;align-items:center;gap:8px"><span style="font-size:16px">${d.ok?'📄':'❌'}</span><div><div style="font-size:12px;font-weight:700">${d.source||d.name||''}</div>${d.ok?`<div style="font-size:11px;color:#166534">${d.documentType}·${d.taxYear||'?'}</div>`:`<div style="font-size:11px;color:#B91C1C">${d.err||''}</div>`}</div></div>${d.ok?`<div style="display:flex;gap:8px;font-size:12px;color:#4B5563;flex-wrap:wrap"><span>הכנסה:<strong>${fmt(d.grossIncome||0)}</strong></span><span>מס:<strong>${fmt(d.taxWithheld||0)}</strong></span></div>`:''}</div>`).join('')}</div></div>`:'' ;
   const lead=S.leadSent?`<div class="lead-sent"><div style="font-size:36px;margin-bottom:8px">✅</div><h3>הפרטים נשלחו!</h3><p>סיכום הבדיקה נשלח לצוות שלנו ונחזור אליך בהקדם.</p></div>`:
 `<div class="lead-box"><h3>📬 רוצה שנחזור אליך?</h3><p>השאר פרטים ונציג מקצועי יחזור אליך לבדיקה.</p>
-<div class="g1" style="margin-bottom:10px"><div class="fr"><label class="lbl">שם מלא</label><input type="text" class="inp" placeholder="ישראל ישראלי" value="${S.leadName}" oninput="S.leadName=this.value" autocomplete="name"></div>
-<div class="fr"><label class="lbl">טלפון</label><input type="tel" class="inp" placeholder="050-0000000" value="${S.leadPhone}" oninput="S.leadPhone=this.value" autocomplete="tel"></div></div>
-<div class="fr"><label class="lbl">אימייל</label><input type="email" class="inp" placeholder="israel@example.com" value="${S.leadEmail}" oninput="S.leadEmail=this.value" autocomplete="email"></div>
+<div class="g1" style="margin-bottom:10px"><div class="fr"><label class="lbl">שם מלא</label><input type="text" class="inp" placeholder="ישראל ישראלי" value="${esc(S.leadName)}" oninput="S.leadName=this.value" autocomplete="name"></div>
+<div class="fr"><label class="lbl">טלפון</label><input type="tel" class="inp" placeholder="050-0000000" value="${esc(S.leadPhone)}" oninput="S.leadPhone=this.value" autocomplete="tel"></div></div>
+<div class="fr"><label class="lbl">אימייל</label><input type="email" class="inp" placeholder="israel@example.com" value="${esc(S.leadEmail)}" oninput="S.leadEmail=this.value" autocomplete="email"></div>
 ${S.leadErr?`<div style="font-size:13px;color:#B91C1C;font-weight:600;margin-bottom:8px">⚠️ ${S.leadErr}</div>`:''}
 <button class="btnp"${S.leadSending?' disabled':''} onclick="sendLead()">${S.leadSending?'⏳ שולח...':'📨 שלח פרטים וסיכום'}</button>
 <p style="font-size:11px;color:#6B7280;margin-top:6px">הפרטים לצורך יצירת קשר בלבד. ראה <a href="privacy.html" style="color:#1B4F8A">מדיניות פרטיות</a>.</p></div>`;
@@ -1093,7 +1120,9 @@ ${isR?`<p style="font-size:12px;opacity:.65;margin-top:8px">ניתן לתבוע 
 <tr><td>מס לפי מדרגות</td><td>${fmt(s.grossTax)}</td></tr>
 <tr><td style="color:#166534">${s.cpPts} נקודות זיכוי × ₪${fmtN(s.cpValue)}</td><td style="color:#166534;font-weight:600">(${fmt(s.cpCredit)})</td></tr>
 ${s.penEmpCr>0?`<tr><td style="color:#166534">זיכוי פנסיה עובד</td><td style="color:#166534;font-weight:600">(${fmt(s.penEmpCr)})</td></tr>`:''}
-${s.periphCr>0?`<tr><td style="color:#166534">זיכוי ישוב מזכה (${S.periphery})</td><td style="color:#166534;font-weight:600">(${fmt(s.periphCr)})</td></tr>`:''}
+${s.periphCr>0?`<tr><td style="color:#166534">זיכוי ישוב מזכה (${esc(S.periphery)})</td><td style="color:#166534;font-weight:600">(${fmt(s.periphCr)})</td></tr>`:''}
+${s.cap102>0?`<tr><td style="color:#B45309">הכנסה הונית 102 (25%)</td><td style="color:#B45309;font-weight:600">+${fmt(s.cap102Tax)}</td></tr>`:''}
+${s.surtax&&s.surtax.surtaxTotal>0?`<tr><td style="color:#B45309">מס ייסף (מעל ${fmtN(s.surtax.threshold)} ₪)${s.surtax.capitalSurtax>0?' כולל 2% הוני':''}</td><td style="color:#B45309;font-weight:600">+${fmt(s.surtax.surtaxTotal)}</td></tr>`:''}
 <tr style="background:#F8FAFC"><td style="font-weight:800;color:#0F2744">חבות מס נטו</td><td style="font-weight:800;color:#0F2744">${fmt(s.netTax)}</td></tr>
 <tr><td>מס שנוכה</td><td>${fmt(s.withheld)}</td></tr>
 </tbody><tfoot><tr class="tot" style="background:${isR?'#F0FDF4':isO?'#FEF2F2':'#F8FAFC'}">
