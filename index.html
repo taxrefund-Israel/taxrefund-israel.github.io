@@ -192,6 +192,17 @@ table.bt .tot td{padding:11px 10px;font-size:14px;font-weight:900;border-top:2px
 .restore-a11y{background:none;border:none;color:rgba(180,210,255,.5);font-size:12px;cursor:pointer;font-family:'Heebo',sans-serif;padding:0;text-decoration:underline;display:none}
 .restore-a11y:hover{color:rgba(180,210,255,.85)}
 
+/* ── Feedback widget ── */
+.fb-fab{position:fixed;bottom:24px;right:24px;z-index:9999;background:#F59E0B;color:#fff;border:none;border-radius:28px;padding:12px 18px;font-family:'Heebo',sans-serif;font-size:13px;font-weight:800;cursor:pointer;box-shadow:0 4px 20px rgba(245,158,11,.45);display:flex;align-items:center;gap:7px;transition:all .2s;-webkit-tap-highlight-color:transparent}
+.fb-fab:hover{background:#D97706;transform:translateY(-2px)}
+.fb-overlay{display:none;position:fixed;inset:0;background:rgba(15,39,68,.55);z-index:10000;align-items:center;justify-content:center;padding:16px}
+.fb-overlay.open{display:flex}
+.fb-modal{background:#fff;border-radius:18px;padding:26px 22px;width:100%;max-width:420px;box-shadow:0 16px 48px rgba(15,39,68,.3);position:relative;animation:fadeUp .2s ease}
+.fb-modal h3{font-size:17px;font-weight:900;color:#0F2744;margin-bottom:6px}
+.fb-modal p{font-size:13px;color:#6B7280;margin-bottom:16px;line-height:1.6}
+.fb-close{position:absolute;top:14px;left:16px;background:none;border:none;font-size:20px;color:#9CA3AF;cursor:pointer;line-height:1}
+.fb-close:hover{color:#374151}
+.fb-chars{font-size:11px;color:#9CA3AF;text-align:left;margin-top:3px}
 /* ── Accessibility widget ── */
 .acc-fab{position:fixed;bottom:24px;left:24px;z-index:9999;width:52px;height:52px;border-radius:50%;background:#1B4F8A;color:#fff;border:none;cursor:pointer;font-size:24px;box-shadow:0 4px 20px rgba(15,39,68,.35);display:flex;align-items:center;justify-content:center;transition:all .2s;-webkit-tap-highlight-color:transparent}
 .acc-fab:hover{background:#0F3D6E;transform:scale(1.08)}
@@ -245,6 +256,38 @@ html.gs-mode{filter:grayscale(100%)}
 
 <!-- ── Accessibility widget ── -->
 <button id="accFab" class="acc-fab" aria-label="פתח כלי נגישות" aria-haspopup="dialog" aria-expanded="false" onclick="A11y.toggle()">♿</button>
+
+<!-- Feedback button -->
+<button class="fb-fab" onclick="document.getElementById('fbOverlay').classList.add('open')" aria-label="דיווח על תקלה או הצעה">
+  ✏️ <span>מצאת טעות? ספר לנו</span>
+</button>
+
+<!-- Feedback modal -->
+<div id="fbOverlay" class="fb-overlay" onclick="if(event.target===this)closeFb()">
+  <div class="fb-modal" role="dialog" aria-modal="true" aria-label="שליחת משוב">
+    <button class="fb-close" onclick="closeFb()" aria-label="סגור">✕</button>
+    <h3>💬 מצאת טעות או חסר שדה?</h3>
+    <p>ספר לנו במה מדובר ונטפל בהקדם. ניתן לכלול פרטי התקשרות לקבלת עדכון.</p>
+    <div id="fbForm">
+      <textarea id="fbMsg" maxlength="200" rows="4" placeholder="תאר את הבעיה או ההצעה שלך (עד 200 תווים)..."
+        style="width:100%;padding:10px 12px;border:1.5px solid #D1D5DB;border-radius:10px;font-family:'Heebo',sans-serif;font-size:13px;resize:vertical;box-sizing:border-box"
+        oninput="document.getElementById('fbCount').textContent=this.value.length"></textarea>
+      <div class="fb-chars"><span id="fbCount">0</span>/200</div>
+      <input id="fbContact" type="text" placeholder="שם ו/או טלפון / מייל (אופציונלי)"
+        style="margin-top:10px;width:100%;padding:9px 12px;border:1.5px solid #D1D5DB;border-radius:10px;font-family:'Heebo',sans-serif;font-size:13px;box-sizing:border-box">
+      <div id="fbErr" style="color:#DC2626;font-size:12px;margin-top:6px;display:none">נא לכתוב הודעה לפני השליחה</div>
+      <button onclick="sendFeedback()"
+        style="margin-top:14px;width:100%;padding:12px;background:#0F2744;color:#fff;border:none;border-radius:10px;font-family:'Heebo',sans-serif;font-size:14px;font-weight:800;cursor:pointer">
+        שלח משוב
+      </button>
+    </div>
+    <div id="fbDone" style="display:none;text-align:center;padding:16px 0">
+      <div style="font-size:32px;margin-bottom:8px">✅</div>
+      <div style="font-size:15px;font-weight:800;color:#166534">תודה! קיבלנו את המשוב שלך.</div>
+      <div style="font-size:13px;color:#6B7280;margin-top:4px">נבדוק ונטפל בהקדם.</div>
+    </div>
+  </div>
+</div>
 <div id="accPanel" class="acc-panel" role="dialog" aria-label="כלי נגישות" aria-modal="true">
   <div class="acc-ph">
     <span>כלי נגישות</span>
@@ -917,6 +960,23 @@ async function sendLead(){
   }
 }
 
+function closeFb(){document.getElementById('fbOverlay').classList.remove('open');document.getElementById('fbMsg').value='';document.getElementById('fbContact').value='';document.getElementById('fbCount').textContent='0';document.getElementById('fbErr').style.display='none';document.getElementById('fbForm').style.display='block';document.getElementById('fbDone').style.display='none';}
+async function sendFeedback(){
+  const msg=document.getElementById('fbMsg').value.trim();
+  const contact=document.getElementById('fbContact').value.trim();
+  const errEl=document.getElementById('fbErr');
+  if(!msg){errEl.style.display='block';return;}
+  errEl.style.display='none';
+  try{
+    await fetch('https://formsubmit.co/ajax/yaniv@barshaf.com',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Accept':'application/json'},
+      body:JSON.stringify({_subject:'משוב מהאתר — סימולטור מס',message:msg,contact:contact||'לא הוזן',_captcha:'false'})
+    });
+  }catch(e){console.warn('feedback send error',e);}
+  document.getElementById('fbForm').style.display='none';
+  document.getElementById('fbDone').style.display='block';
+}
 function checkDevPass(){if(btoa(S.devPass)===DEV_KEY)merge({devUnlocked:true,devErr:''});else set('devErr','קוד גישה שגוי');}
 function exportData(){if(!S.result)return;const r=S.result;const b=new Blob([JSON.stringify({taxYear:r.year,grossIncome:r.gross,taxableIncome:r.taxable,taxWithheld:r.withheld,grossTax:r.grossTax,creditPoints:r.sp1.cpPts,netTax:r.netTax,refundAmount:r.totalRefund,leadName:S.leadName,leadPhone:S.leadPhone,leadEmail:S.leadEmail},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`tax_${r.year}.json`;a.click();URL.revokeObjectURL(a.href);set('exported',true);}
 function resetAll(){Object.assign(S,{step:0,docs:[],parsed:[],result:null,procMsg:'',err:'',periphery:'',leadName:'',leadPhone:'',leadEmail:'',leadSent:false,leadSending:false,leadErr:'',devOpen:false,devPass:'',devUnlocked:false,devErr:'',exported:false,_drag:false});render();}
