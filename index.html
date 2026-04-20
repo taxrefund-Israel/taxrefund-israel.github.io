@@ -786,13 +786,19 @@ function calcCP(g,m,sp,ni,ages,degPts,spNI,yr){let p=2.25;
   if(ni)p+=1;if(degPts>0)p+=degPts;if(m==='married'&&spNI)p+=2.25;
   return Math.round(p*100)/100;}
 // perCr = זיכוי ישיר מישוב מזכה (₪, לא נקודות)
-function calcOne(gross,withheld,penEmp,penEmplr,eduEmp,eduEmplr,cpPts,yr,perCr,capital102=0){
+// lifeIns = פרמיות ביטוח חיים ששולמו (שדות 036/081 בטופס 106)
+function calcOne(gross,withheld,penEmp,penEmplr,eduEmp,eduEmplr,cpPts,yr,perCr,capital102=0,lifeIns=0){
   const cfg=TAX[yr]||TAX[2024];
   // קרן השתלמות שכיר אינה מפחיתה הכנסה חייבת
   const taxable=gross,grossTax=calcTax(taxable,yr);
   const cpC=Math.round(cfg.cp*cpPts);
   const penMaxAnn=PEN_EMP_MAX[yr]||8148;
   const peb=Math.min(penEmp,gross*.07,penMaxAnn),pec=Math.round(peb*.35);
+  // ביטוח חיים — סעיף 45א לפקודה: זיכוי 25%
+  // תקרת הפרמיה המזכה = 5% × min(ברוטו, תקרת הכנסה) — תקרת ההכנסה נגזרת מתקרת הפנסיה
+  const lifeInsCap=Math.round((penMaxAnn/0.07)*0.05);
+  const lifeInsBase=Math.min(lifeIns,gross*0.05,lifeInsCap);
+  const lifeInsCr=Math.round(lifeInsBase*0.25);
   // פנסיה מעסיק — אינה מזכה בהטבת מס לשכיר
   const periph=Math.round(perCr||0);
   // סעיף 102 הוני — מס 25% שטוח
@@ -800,9 +806,10 @@ function calcOne(gross,withheld,penEmp,penEmplr,eduEmp,eduEmplr,cpPts,yr,perCr,c
   const cap102Tax=Math.round(cap102*0.25);
   // מס ייסף על הכנסה כוללת
   const st=calcSurtax(gross,cap102,yr);
-  const net=Math.max(0,grossTax+cap102Tax+st.surtaxTotal-cpC-pec-periph);
+  const net=Math.max(0,grossTax+cap102Tax+st.surtaxTotal-cpC-pec-lifeInsCr-periph);
   return{gross,taxable,withheld,grossTax,cpPts,cpValue:cfg.cp,
     cpCredit:cpC,penEmp,penEmpBase:peb,penEmpCr:pec,
+    lifeIns,lifeInsBase,lifeInsCr,
     periphCr:periph,cap102,cap102Tax,surtax:st,
     netTax:net,refund:Math.round(withheld-net),brackets:calcBr(taxable,yr)};}
 function degCredit(type,gy,hasInt,intEnd,ty){
@@ -858,7 +865,7 @@ async function extractImgText(file){
 function parseDoc(text,filename){
   const R={documentType:'other',employerName:'',taxYear:0,
     grossIncome:0,taxWithheld:0,pensionEmployee:0,pensionEmployer:0,capital102:0,
-    eduFundEmployee:0,eduFundEmployer:0,source:filename};
+    eduFundEmployee:0,eduFundEmployer:0,lifeInsurance:0,source:filename};
   // Normalize for detection: collapse spaces between same-type adjacent chars (handles char-by-char PDFs)
   const norm=text.replace(/\n/g,' ')
     .replace(/(?<=[\u0590-\u05FF]) (?=[\u0590-\u05FF])/g,'')
@@ -873,7 +880,7 @@ function parseDoc(text,filename){
     const em=text.match(/(\S+(?:\s+\S+){0,3})\s+(?:בע"מ|בעמ|pixellot|פיקסלוט)/i);
     if(em)R.employerName=em[0].trim().substring(0,40);
     // קודי סעיפים שאסור לפרש כסכומים
-    const SEC_CODES=new Set([42,45,47,86,158,172,169,50,51,52,243,244]);
+    const SEC_CODES=new Set([36,42,45,47,81,86,158,172,169,50,51,52,243,244]);
     const lns=text.split('\n');
     // חיפוש סכום בשורה נוכחית + עד 2 שורות הבאות, תוך סינון קודי סעיפים
     function amtNear(i,minV,maxV){
@@ -907,6 +914,10 @@ function parseDoc(text,filename){
       // סעיף 102 מסלול הוני — מס 25% שטוח
       if(!R.capital102&&(/102\s*הוני|הוני\s*102|מניות.*102|102.*מניות|אופציות.*הוני|הוני.*אופציות|מימוש\s*מניות/.test(line))){
         const v=amtNear(i,100,5000000);if(v)R.capital102=v;
+      }
+      // ביטוח חיים — סעיפים 036 ו-081 (זיכוי 25% לפי סעיף 45א לפקודה)
+      if(!R.lifeInsurance&&(/\b036\b|\b081\b/.test(line)||/ביטוח\s*חיים/.test(line))){
+        const v=amtNear(i,50,50000);if(v)R.lifeInsurance=v;
       }
     }
     // fallback: אם לא נמצאה הכנסה — חפש את המספר הגבוה ביותר מעל 10,000 בכל המסמך
@@ -961,22 +972,22 @@ async function analyse(){
   await new Promise(r=>setTimeout(r,200));
   const ok=extracted.filter(d=>d.ok);
   if(!ok.length){merge({err:'לא הצלחתי לחלץ נתונים. נסה PDF ברזולוציה גבוהה.',step:1});return;}
-  let gross=0,withheld=0,penEmp=0,penEmplr=0,eduEmp=0,eduEmplr=0,capital102=0;
-  for(const d of ok){gross+=d.grossIncome||0;withheld+=d.taxWithheld||0;penEmp+=d.pensionEmployee||0;penEmplr+=d.pensionEmployer||0;eduEmp+=d.eduFundEmployee||0;eduEmplr+=d.eduFundEmployer||0;capital102+=d.capital102||0;}
+  let gross=0,withheld=0,penEmp=0,penEmplr=0,eduEmp=0,eduEmplr=0,capital102=0,lifeIns=0;
+  for(const d of ok){gross+=d.grossIncome||0;withheld+=d.taxWithheld||0;penEmp+=d.pensionEmployee||0;penEmplr+=d.pensionEmployer||0;eduEmp+=d.eduFundEmployee||0;eduEmplr+=d.eduFundEmployer||0;capital102+=d.capital102||0;lifeIns+=d.lifeInsurance||0;}
   if(!gross){merge({err:'לא נמצאה הכנסה. ודא שהועלה טופס 106 תקין.',step:1});return;}
   addLog(`✔ סה"כ הכנסה: ${fmtN(gross)} ₪`+(capital102?` | 102 הוני: ${fmtN(capital102)} ₪`:''),'ok');
   const yr=S.taxYear,isM=S.marital==='married';
   const degPts=degCredit(S.degree,S.degreeGradYear,S.degreeHasInternship,S.degreeInternshipEnd,yr);
   const sp1Pts=calcCP(S.gender,S.marital,S.singlePar,S.newImm,S.kidsAges,degPts,isM&&S.spouseNoIncome,yr);
   const perCr=S.periphery?periphCredit(S.periphery,gross,yr):0;
-  const sp1=calcOne(gross,withheld,penEmp,penEmplr,eduEmp,eduEmplr,sp1Pts,yr,perCr,capital102);
+  const sp1=calcOne(gross,withheld,penEmp,penEmplr,eduEmp,eduEmplr,sp1Pts,yr,perCr,capital102,lifeIns);
   const calcMode=isM?(S.spouseNoIncome?'joint':'separate'):'single';
   const cfg=TAX[yr]||TAX[2024];
   const dl={none:'',bachelor:'תואר ראשון',master:'תואר שני',medicine:'רפואה',phd:'דוקטורט',vocational:'תעודת מקצוע',teaching:'תעודת הוראה'};
   merge({result:{year:yr,calcMode,sp1,totalRefund:sp1.refund,degPts,degreeLabel:dl[S.degree]||'',
     gross,taxable:sp1.taxable,withheld,grossTax:sp1.grossTax,creditPts:sp1.cpPts,
     cpValue:cfg.cp,cpCredit:sp1.cpCredit,netTax:sp1.netTax,refund:sp1.refund,
-    penEmpCr:sp1.penEmpCr},step:3});
+    penEmpCr:sp1.penEmpCr,lifeInsCr:sp1.lifeInsCr},step:3});
 }
 
 // ─── Save lead to Supabase ────────────────────────────────────────────────────
@@ -1011,6 +1022,7 @@ async function sendLead(){
     `הכנסה ברוטו: ${fmt(r.gross)}`,`הכנסה חייבת: ${fmt(r.taxable)}`,
     `מס לפי מדרגות: ${fmt(r.grossTax)}`,`נקודות זיכוי: ${r.creditPts} (שווי: ${fmt(r.cpCredit)})`,
     r.penEmpCr>0?`זיכוי פנסיה עובד: ${fmt(r.penEmpCr)}`:'',
+    r.lifeInsCr>0?`זיכוי ביטוח חיים (45א): ${fmt(r.lifeInsCr)}`:'',
     `חבות מס נטו: ${fmt(r.netTax)}`,`מס שנוכה: ${fmt(r.withheld)}`,
     `תוצאה: ${isR?`החזר: ${fmt(r.totalRefund)}`:isO?`חוב: ${fmt(Math.abs(r.totalRefund))}`:'מאוזן'}`,'','** הערכה ראשונית בלבד **'
   ].filter(Boolean).join('\n');
@@ -1172,6 +1184,7 @@ ${isR?`<p style="font-size:12px;opacity:.65;margin-top:8px">ניתן לתבוע 
 <tr><td>מס לפי מדרגות</td><td>${fmt(s.grossTax)}</td></tr>
 <tr><td style="color:#166534">${s.cpPts} נקודות זיכוי × ₪${fmtN(s.cpValue)}</td><td style="color:#166534;font-weight:600">(${fmt(s.cpCredit)})</td></tr>
 ${s.penEmpCr>0?`<tr><td style="color:#166534">זיכוי פנסיה עובד</td><td style="color:#166534;font-weight:600">(${fmt(s.penEmpCr)})</td></tr>`:''}
+${s.lifeInsCr>0?`<tr><td style="color:#166534">זיכוי ביטוח חיים (סעיף 45א)</td><td style="color:#166534;font-weight:600">(${fmt(s.lifeInsCr)})</td></tr>`:''}
 ${s.periphCr>0?`<tr><td style="color:#166534">זיכוי ישוב מזכה (${esc(S.periphery)})</td><td style="color:#166534;font-weight:600">(${fmt(s.periphCr)})</td></tr>`:''}
 ${s.cap102>0?`<tr><td style="color:#B45309">הכנסה הונית 102 (25%)</td><td style="color:#B45309;font-weight:600">+${fmt(s.cap102Tax)}</td></tr>`:''}
 ${s.surtax&&s.surtax.surtaxTotal>0?`<tr><td style="color:#B45309">מס ייסף (מעל ${fmtN(s.surtax.threshold)} ₪)${s.surtax.capitalSurtax>0?' כולל 2% הוני':''}</td><td style="color:#B45309;font-weight:600">+${fmt(s.surtax.surtaxTotal)}</td></tr>`:''}
@@ -1190,9 +1203,10 @@ ${s.surtax&&s.surtax.surtaxTotal>0?`<tr><td style="color:#B45309">מס ייסף 
 <div style="margin-top:8px;padding:9px 12px;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:9px;display:flex;justify-content:space-between">
 <span style="font-size:13px;color:#166534;font-weight:600">${s.cpPts} × ₪${fmtN(s.cpValue)}</span>
 <span style="font-size:13px;font-weight:800;color:#166534">${fmt(s.cpCredit)}</span></div></div>
-${s.penEmpCr?`<div class="calc-card"><div style="font-size:13px;font-weight:800;color:#0F2744;margin-bottom:10px">פנסיה</div>
+${(s.penEmpCr||s.lifeInsCr)?`<div class="calc-card"><div style="font-size:13px;font-weight:800;color:#0F2744;margin-bottom:10px">זיכויים — סעיף 45א</div>
 <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(165px,1fr));gap:8px">
-<div class="bcard" style="background:#F0FDF4;border:1px solid #BBF7D0"><div style="font-size:11px;color:#166534;font-weight:700;margin-bottom:3px">זיכוי פנסיה עובד</div><div style="font-size:17px;font-weight:900;color:#166534">${fmt(s.penEmpCr)}</div><div style="font-size:11px;color:#4B5563">35% × ${fmt(s.penEmpBase)}</div></div>
+${s.penEmpCr?`<div class="bcard" style="background:#F0FDF4;border:1px solid #BBF7D0"><div style="font-size:11px;color:#166534;font-weight:700;margin-bottom:3px">זיכוי פנסיה עובד</div><div style="font-size:17px;font-weight:900;color:#166534">${fmt(s.penEmpCr)}</div><div style="font-size:11px;color:#4B5563">35% × ${fmt(s.penEmpBase)}</div></div>`:''}
+${s.lifeInsCr?`<div class="bcard" style="background:#F0FDF4;border:1px solid #BBF7D0"><div style="font-size:11px;color:#166534;font-weight:700;margin-bottom:3px">זיכוי ביטוח חיים</div><div style="font-size:17px;font-weight:900;color:#166534">${fmt(s.lifeInsCr)}</div><div style="font-size:11px;color:#4B5563">25% × ${fmt(s.lifeInsBase)}</div></div>`:''}
 </div></div>`:''}
 ${docsS}${lead}
 <div class="brow" style="margin-bottom:8px">
