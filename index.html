@@ -37,7 +37,7 @@
 <meta property="og:type"        content="website">
 <meta property="og:locale"      content="he_IL">
 <meta property="og:url"         content="https://taxrefund-israel.github.io/">
-<meta property="og:image"       content="https://taxrefund-israel.github.io/og-image.svg">
+<meta property="og:image"       content="https://taxrefund-israel.github.io/og-image.png">
 <meta property="og:image:width"  content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt"   content="סימולטור החזר מס לשכירים">
@@ -47,7 +47,7 @@
 <meta name="twitter:card"        content="summary_large_image">
 <meta name="twitter:title"       content="סימולטור החזר מס לשכירים — חינם ומיידי">
 <meta name="twitter:description" content="העלה טופס 106 וקבל הערכת החזר מס מיידית לשנים 2020–2025.">
-<meta name="twitter:image"       content="https://taxrefund-israel.github.io/og-image.svg">
+<meta name="twitter:image"       content="https://taxrefund-israel.github.io/og-image.png">
 
 <!-- Schema.org — WebApplication -->
 <script type="application/ld+json">
@@ -244,8 +244,25 @@ html.gs-mode{filter:grayscale(100%)}
   .btnp,.btng{width:auto}.brow{flex-direction:row}.g1{grid-template-columns:1fr 1fr}
   .file-btns{flex-direction:row}.sline{width:52px}.sci{width:40px;height:40px}
   table.bt td{font-size:14px;padding:10px 12px}table.bt td:last-child{width:130px}
+  .fb-fab-txt{display:inline}
 }
 @media(min-width:768px){.card{padding:28px 32px}}
+/* ── Mobile-specific fixes ── */
+@media(max-width:599px){
+  /* Feedback FAB — show icon only on small screens */
+  .fb-fab-txt{display:none}
+  .fb-fab{padding:12px 14px;border-radius:50%;width:50px;height:50px;justify-content:center}
+  /* Accessibility panel — prevent overflow on narrow screens */
+  .acc-panel{width:calc(100vw - 48px);max-width:272px}
+  /* Tooltip — clamp to viewport */
+  .tip-box{max-width:calc(100vw - 48px);right:auto;left:0}
+  /* Hero amount — slightly smaller on 320px screens */
+  .hero-amt{font-size:36px}
+  /* Table — protect from overflow */
+  .calc-card{overflow-x:auto}
+  /* SEO section padding */
+  section[aria-label="מידע על החזר מס לשכירים"]{padding:28px 12px 24px}
+}
 </style>
 </head>
 <body>
@@ -258,7 +275,7 @@ html.gs-mode{filter:grayscale(100%)}
 
 <!-- Feedback button -->
 <button class="fb-fab" onclick="document.getElementById('fbOverlay').classList.add('open')" aria-label="דיווח על תקלה או הצעה">
-  ✏️ <span>מצאת טעות? ספר לנו</span>
+  ✏️ <span class="fb-fab-txt">מצאת טעות? ספר לנו</span>
 </button>
 
 <!-- Feedback modal -->
