@@ -778,22 +778,25 @@ function calcBr(inc,yr){const{br}=TAX[yr]||TAX[2024];const r=[];let p=0;for(cons
 function childPts(age,isMother,yr){
   if(isNaN(age)||age>=18)return 0;
   if(yr>=2024){
-    // רפורמת 2024: נקודות לפי גיל מדויק לגילאי 0-5, כיסוי 6-17
-    if(age===0)return isMother?2.5:1.5;
+    // רפורמת 2024: שיפור נקודות לגילאי 0-3
+    if(age===0)return isMother?2.5:1.5;   // שנת לידה
     if(age===1)return isMother?4.5:2.5;
     if(age===2)return isMother?4.5:2.5;
     if(age===3)return isMother?3.5:2.0;
-    if(age<=5) return isMother?2.5:1.5;  // גיל 4-5
-    return isMother?2.0:1.0;             // גיל 6-17
+    if(age<=5) return isMother?2.5:1.5;   // גיל 4-5
+    return isMother?2.0:1.0;              // גיל 6-17
   }
   if(yr>=2022){
-    // 2022-2023: גיל 0-5 ללא שינוי, נוספו גיל 6-12
-    if(age<=5) return isMother?2.5:0.5;
-    if(age<=12)return isMother?2.0:1.0;
-    return 0;  // גיל 13-17 טרם כוסה
+    // 2022-2023: אב וגם אם מקבלים 2.5 לגילאי 1-5 (רפורמת 2012 בתוקף מלא)
+    // גיל 0 (שנת לידה): אם=2.5, אב=1.5
+    if(age===0) return isMother?2.5:1.5;
+    if(age<=5)  return 2.5;               // גיל 1-5: שני ההורים 2.5
+    if(age<=12) return isMother?2.0:1.0;  // גיל 6-12 (נוסף ברפורמת 2022)
+    return 0;                              // גיל 13-17 טרם כוסה
   }
-  // 2020-2021: רק גיל 0-5
-  if(age<=5)return isMother?2.5:0.5;
+  // 2020-2021: רפורמת 2012 בתוקף מלא — אב וגם אם 2.5 לגילאי 1-5
+  if(age===0) return isMother?2.5:1.5;   // שנת לידה
+  if(age<=5)  return 2.5;                // גיל 1-5: שני ההורים 2.5
   return 0;
 }
 function calcCP(g,m,sp,ni,ages,degPts,spNI,yr){let p=2.25;
@@ -981,6 +984,7 @@ async function analyse(){
       const p=parseDoc(text,f.name);
       extracted.push({...p,ok:true,rawPreview:text.split('\n').slice(0,20).join(' | ')});
       addLog(`✔ ${p.documentType} | שנה:${p.taxYear} | הכנסה: ${fmtN(p.grossIncome)} ₪ | מס: ${fmtN(p.taxWithheld)} ₪ | פנסיה עובד: ${fmtN(p.pensionEmployee)} ₪`,'ok');
+      if(p.taxYear&&p.taxYear!==S.taxYear)addLog(`⚠ המסמך הוא לשנת ${p.taxYear} — אך שנת המס שנבחרה היא ${S.taxYear}. ודא שהמסמך נכון.`,'err');
       if(p.pensionEmployer||p.eduFundEmployer)addLog(`  פנסיה מעסיק: ${fmtN(p.pensionEmployer)} ₪ | קה"ש מעסיק: ${fmtN(p.eduFundEmployer)} ₪`,'ok');
     }catch(e){addLog(`❌ ${e.message}`,'err');extracted.push({source:f.name,ok:false,err:e.message});}
   }
@@ -1090,7 +1094,9 @@ function checkDevPass(){if(btoa(S.devPass)===DEV_KEY)merge({devUnlocked:true,dev
 function exportData(){if(!S.result)return;const r=S.result;const b=new Blob([JSON.stringify({taxYear:r.year,grossIncome:r.gross,taxableIncome:r.taxable,taxWithheld:r.withheld,grossTax:r.grossTax,creditPoints:r.sp1.cpPts,netTax:r.netTax,refundAmount:r.totalRefund,leadName:S.leadName,leadPhone:S.leadPhone,leadEmail:S.leadEmail},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`tax_${r.year}.json`;a.click();URL.revokeObjectURL(a.href);set('exported',true);}
 function resetAll(){Object.assign(S,{step:0,docs:[],parsed:[],result:null,procMsg:'',err:'',periphery:'',leadName:'',leadPhone:'',leadEmail:'',leadSent:false,leadSending:false,leadErr:'',devOpen:false,devPass:'',devUnlocked:false,devErr:'',exported:false,_drag:false});render();}
 
+let _prevStep=-1;
 function render(){
+  if(S.step!==_prevStep){window.scrollTo({top:0,behavior:'smooth'});_prevStep=S.step;}
   document.getElementById('sBar').innerHTML=STEPS.map((s,i)=>{const c=i<S.step?'done':i===S.step?'active':'off';return`<div class="snode" role="listitem"><div class="sci ${c}">${i<S.step?'✓':i+1}</div><span class="slbl${i>S.step?' off':''}">${s}</span></div>`+(i<3?`<div class="sline ${i<S.step?'done':'off'}" aria-hidden="true"></div>`:'')}).join('');
   document.getElementById('sContent').innerHTML=[r0,r1,r2,r3][Math.min(S.step,3)]();
   if(S.step===2)logEl=document.querySelector('.proc-log');
@@ -1139,6 +1145,10 @@ ${S.degree!=='none'&&S.degreeGradYear?`<label class="chk" style="margin-bottom:1
 function r1(){
   const fl=S.docs.length?`<div style="margin-bottom:12px">${S.docs.map((f,i)=>`<div class="fchip"><div style="display:flex;align-items:center;gap:10px"><span style="font-size:20px">${f.type.includes('pdf')?'📄':'🖼️'}</span><div><div style="font-size:13px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:200px">${f.name}</div><div style="font-size:11px;color:#6B7280">${(f.size/1024).toFixed(0)} KB</div></div></div><button class="fdel" onclick="S.docs.splice(${i},1);render()" aria-label="הסר קובץ">×</button></div>`).join('')}</div>`:'';
   return`<h2 class="stitle">📄 העלאת מסמכים</h2><div class="tbar"></div>
+<div style="display:inline-flex;align-items:center;gap:8px;background:#0F2744;color:#FBBF24;border-radius:10px;padding:8px 16px;font-size:14px;font-weight:800;margin-bottom:14px">
+  <span>📅</span><span>שנת מס: ${S.taxYear}</span>
+  <span style="font-size:11px;font-weight:500;color:rgba(251,191,36,.7)">— יש להעלות מסמכים לשנה זו בלבד</span>
+</div>
 <div class="ibox">📌 העלה טופס 106, אישורי ביטוח לאומי, פנסיה.<br>
 הנתונים אינם נשמרים לאחר הבדיקה.</div>
 <div class="wbox">⏱ PDF — מיידי. תמונה (JPG/PNG) — 20-40 שניות OCR.</div>
@@ -1178,7 +1188,7 @@ function r3(){
   ];
   const cpG=cpI.map(it=>`<div class="ptcard${it.cls?` ${it.cls}`:''}"><span style="font-size:13px;font-weight:500;color:${it.cls==='joint'?'#92400E':it.cls==='deg'?'#6B21A8':'#1E3A5F'}">${it.l}</span><span style="font-size:15px;font-weight:900;color:${it.cls==='joint'?'#92400E':it.cls==='deg'?'#7C3AED':'#1B4F8A'}">${it.p}</span></div>`).join('');
   const brR=s.brackets.map(b=>`<tr><td style="font-size:12px">${fmtN(b.from)}–${b.to===Infinity?'∞':fmtN(b.to)}</td><td><span class="bdg">${pct(b.rate)}</span></td><td style="font-size:12px">${fmt(b.tx)}</td><td>${fmt(b.tax)}</td></tr>`).join('');
-  const docsS=S.parsed.length?`<div class="calc-card" style="padding:0;overflow:hidden"><div style="padding:11px 13px;background:#F8FAFC;border-bottom:1px solid #E2E8F0;font-size:13px;font-weight:800;color:#0F2744">מסמכים שנותחו</div><div style="padding:10px 13px">${S.parsed.map(d=>`<div style="padding:8px 10px;background:${d.ok?'#F8FAFC':'#FEF2F2'};border:1px solid ${d.ok?'#E2E8F0':'#FECACA'};border-radius:9px;margin-bottom:7px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:5px;align-items:center"><div style="display:flex;align-items:center;gap:8px"><span style="font-size:16px">${d.ok?'📄':'❌'}</span><div><div style="font-size:12px;font-weight:700">${d.source||d.name||''}</div>${d.ok?`<div style="font-size:11px;color:#166534">${d.documentType}·${d.taxYear||'?'}</div>`:`<div style="font-size:11px;color:#B91C1C">${d.err||''}</div>`}</div></div>${d.ok?`<div style="display:flex;gap:8px;font-size:12px;color:#4B5563;flex-wrap:wrap"><span>הכנסה:<strong>${fmt(d.grossIncome||0)}</strong></span><span>מס:<strong>${fmt(d.taxWithheld||0)}</strong></span></div>`:''}</div>`).join('')}</div></div>`:'' ;
+  const docsS=S.parsed.length?`<div class="calc-card" style="padding:0;overflow:hidden"><div style="padding:11px 13px;background:#F8FAFC;border-bottom:1px solid #E2E8F0;font-size:13px;font-weight:800;color:#0F2744">מסמכים שנותחו</div><div style="padding:10px 13px">${S.parsed.map(d=>`<div style="padding:8px 10px;background:${d.ok?'#F8FAFC':'#FEF2F2'};border:1px solid ${d.ok?'#E2E8F0':'#FECACA'};border-radius:9px;margin-bottom:7px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:5px;align-items:center"><div style="display:flex;align-items:center;gap:8px"><span style="font-size:16px">${d.ok?'📄':'❌'}</span><div><div style="font-size:12px;font-weight:700">${d.source||d.name||''}</div>${d.ok?`<div style="font-size:11px;color:#166534">${d.documentType}·${d.taxYear||'?'}${d.taxYear&&d.taxYear!==S.taxYear?` <span style="color:#B45309;font-weight:700">⚠ שנה לא תואמת! (נבחרה ${S.taxYear})</span>`:''}</div>`:`<div style="font-size:11px;color:#B91C1C">${d.err||''}</div>`}</div></div>${d.ok?`<div style="display:flex;gap:8px;font-size:12px;color:#4B5563;flex-wrap:wrap"><span>הכנסה:<strong>${fmt(d.grossIncome||0)}</strong></span><span>מס:<strong>${fmt(d.taxWithheld||0)}</strong></span></div>`:''}</div>`).join('')}</div></div>`:'' ;
   const lead=S.leadSent?`<div class="lead-sent"><div style="font-size:36px;margin-bottom:8px">✅</div><h3>הפרטים נשלחו!</h3><p>סיכום הבדיקה נשלח לצוות שלנו ונחזור אליך בהקדם.</p></div>`:
 `<div class="lead-box"><h3>📬 רוצה שנחזור אליך?</h3><p>השאר פרטים ונציג מקצועי יחזור אליך לבדיקה.</p>
 <div class="g1" style="margin-bottom:10px"><div class="fr"><label class="lbl">שם מלא</label><input type="text" class="inp" placeholder="ישראל ישראלי" value="${esc(S.leadName)}" oninput="S.leadName=this.value" autocomplete="name"></div>
