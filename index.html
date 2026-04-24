@@ -782,8 +782,8 @@ function childPts(age,isMother,yr){
     if(age===0)return isMother?2.5:1.5;   // שנת לידה
     if(age===1)return isMother?4.5:2.5;
     if(age===2)return isMother?4.5:2.5;
-    if(age===3)return isMother?3.5:2.0;
-    if(age<=5) return isMother?2.5:1.5;   // גיל 4-5
+    if(age===3)return isMother?3.5:2.5;   // אם: משופר; אב: 2.5 ללא שינוי
+    if(age<=5) return 2.5;               // גיל 4-5: שני ההורים 2.5 (ללא שינוי)
     return isMother?2.0:1.0;              // גיל 6-17
   }
   if(yr>=2022){
