@@ -775,30 +775,31 @@ function calcSurtax(regularInc,capitalInc,yr){
 function calcTax(inc,yr){const{br}=TAX[yr]||TAX[2024];let t=0,p=0;for(const[mx,rt]of br){if(inc<=p)break;const u=mx===Infinity?inc:mx;t+=(Math.min(inc,u)-p)*rt;p=u;if(inc<=p)break;}return Math.max(0,Math.round(t));}
 function calcBr(inc,yr){const{br}=TAX[yr]||TAX[2024];const r=[];let p=0;for(const[mx,rt]of br){if(inc<=p)break;const u=mx===Infinity?inc:mx;const tx=Math.min(inc,u)-p;if(tx>0)r.push({from:p,to:u,rate:rt,tx,tax:Math.round(tx*rt)});p=u;if(inc<=p)break;}return r;}
 // נקודות זיכוי בגין ילד לפי גיל, מין הורה ושנת המס
+// נקודות זיכוי בגין ילד — מקור: כל זכות (kolzchut.org.il)
+// טבלה מסכמת: https://www.kolzchut.org.il/he/נקודות_זיכוי_ממס_הכנסה_להורה_לילד_עד_גיל_18
 function childPts(age,isMother,yr){
   if(isNaN(age)||age>=18)return 0;
   if(yr>=2024){
-    // רפורמת 2024: שיפור נקודות לגילאי 0-3
-    if(age===0)return isMother?2.5:1.5;   // שנת לידה
-    if(age===1)return isMother?4.5:2.5;
-    if(age===2)return isMother?4.5:2.5;
-    if(age===3)return isMother?3.5:2.5;   // אם: משופר; אב: 2.5 ללא שינוי
-    if(age<=5) return 2.5;               // גיל 4-5: שני ההורים 2.5 (ללא שינוי)
-    return isMother?2.0:1.0;              // גיל 6-17
+    // רפורמת 2024: שיפור נקודות לגילאי 0-3 לשני ההורים; הרחבה לגילאי 13-17
+    if(age===0) return 2.5;           // לשני ההורים (עלה מ-1.5)
+    if(age<=2)  return 4.5;           // לשני ההורים (עלה מ-2.5)
+    if(age===3) return 3.5;           // לשני ההורים (עלה מ-2.5)
+    if(age<=5)  return 2.5;           // גיל 4-5: שני ההורים (ללא שינוי)
+    return isMother?2.0:1.0;          // גיל 6-17: אם=2, אב=1
   }
   if(yr>=2022){
-    // 2022-2023: אב וגם אם מקבלים 2.5 לגילאי 1-5 (רפורמת 2012 בתוקף מלא)
-    // גיל 0 (שנת לידה): אם=2.5, אב=1.5
-    if(age===0) return isMother?2.5:1.5;
-    if(age<=5)  return 2.5;               // גיל 1-5: שני ההורים 2.5
-    if(age<=12) return isMother?2.0:1.0;  // גיל 6-12 (נוסף ברפורמת 2022)
-    return 0;                              // גיל 13-17 טרם כוסה
+    // 2022-2023: גיל 0 = 1.5 לשניהם; גיל 1-5 = 2.5 לשניהם
+    // גיל 6-12: אם=2 (הוכפל), אב=1 (נוסף חדש); גיל 13-17: אם=1 (נוסף), אב=0
+    if(age===0) return 1.5;           // לשני ההורים
+    if(age<=5)  return 2.5;           // לשני ההורים
+    if(age<=12) return isMother?2.0:1.0;  // גיל 6-12
+    if(age<=17) return isMother?1.0:0;    // גיל 13-17: אם=1 (נוסף ב-2022), אב=0
+    return 0;
   }
-  // 2020-2021: רפורמת 2012 בתוקף מלא — אב וגם אם 2.5 לגילאי 1-5
-  // גיל 6-12: אם מקבלת 1 נקודה (לאב לא היה זיכוי לגילאים אלו לפני רפורמת 2022)
-  if(age===0) return isMother?2.5:1.5;   // שנת לידה
-  if(age<=5)  return 2.5;                // גיל 1-5: שני ההורים 2.5
-  if(age<=12) return isMother?1.0:0;     // גיל 6-12: אם=1 (אב=0 לפני רפורמת 2022)
+  // 2020-2021: גיל 0 = 1.5; גיל 1-5 = 2.5 לשניהם; גיל 6-12 = אם=1, אב=0; 13+ = 0
+  if(age===0) return 1.5;             // לשני ההורים
+  if(age<=5)  return 2.5;             // לשני ההורים
+  if(age<=12) return isMother?1.0:0;  // גיל 6-12: אם=1, אב=0 (לפני רפורמת 2022)
   return 0;
 }
 function calcCP(g,m,sp,ni,ages,degPts,spNI,yr){let p=2.25;
