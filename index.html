@@ -795,8 +795,10 @@ function childPts(age,isMother,yr){
     return 0;                              // גיל 13-17 טרם כוסה
   }
   // 2020-2021: רפורמת 2012 בתוקף מלא — אב וגם אם 2.5 לגילאי 1-5
+  // גיל 6-12: אם מקבלת 1 נקודה (לאב לא היה זיכוי לגילאים אלו לפני רפורמת 2022)
   if(age===0) return isMother?2.5:1.5;   // שנת לידה
   if(age<=5)  return 2.5;                // גיל 1-5: שני ההורים 2.5
+  if(age<=12) return isMother?1.0:0;     // גיל 6-12: אם=1 (אב=0 לפני רפורמת 2022)
   return 0;
 }
 function calcCP(g,m,sp,ni,ages,degPts,spNI,yr){let p=2.25;
@@ -906,7 +908,10 @@ function parseDoc(text,filename){
     // חיפוש סכום בשורה נוכחית + עד 2 שורות הבאות, תוך סינון קודי סעיפים
     function amtNear(i,minV,maxV){
       for(let j=i;j<Math.min(i+3,lns.length);j++){
-        const ns=(lns[j].match(/[\d,]+/g)||[]).map(pN)
+        const ns=(lns[j].match(/[\d,]+/g)||[])
+          // סינון רצפים שכל חלקיהם (מופרדים בפסיק) הם קודי סעיפים — למשל "172,158" או "81,36"
+          .filter(raw=>!raw.split(',').map(Number).every(p=>SEC_CODES.has(p)))
+          .map(pN)
           .filter(n=>n>=minV&&n<=maxV&&!SEC_CODES.has(n));
         if(ns.length)return Math.max(...ns);
       }return 0;
@@ -936,8 +941,9 @@ function parseDoc(text,filename){
       if(!R.capital102&&(/102\s*הוני|הוני\s*102|מניות.*102|102.*מניות|אופציות.*הוני|הוני.*אופציות|מימוש\s*מניות/.test(line))){
         const v=amtNear(i,100,5000000);if(v)R.capital102=v;
       }
-      // ביטוח חיים — סעיפים 036 ו-081 (זיכוי 25% לפי סעיף 45א לפקודה)
-      if(!R.lifeInsurance&&(/\b036\b|\b081\b/.test(line)||/ביטוח\s*חיים/.test(line))){
+      // ביטוח חיים — סעיפים 036/36 ו-081/81 (זיכוי 25% לפי סעיף 45א לפקודה)
+      // מזהה גם "(81,36)" וגם "בטוח חיים" (ללא י' כפי שמופיע בחלק מהטפסים)
+      if(!R.lifeInsurance&&(/\b0?36\b|\b0?81\b/.test(line)||/ב(י)?טוח\s*חיים/.test(line))){
         const v=amtNear(i,50,50000);if(v)R.lifeInsurance=v;
       }
     }
@@ -984,11 +990,14 @@ async function analyse(){
       const p=parseDoc(text,f.name);
       extracted.push({...p,ok:true,rawPreview:text.split('\n').slice(0,20).join(' | ')});
       addLog(`✔ ${p.documentType} | שנה:${p.taxYear} | הכנסה: ${fmtN(p.grossIncome)} ₪ | מס: ${fmtN(p.taxWithheld)} ₪ | פנסיה עובד: ${fmtN(p.pensionEmployee)} ₪`,'ok');
-      if(p.taxYear&&p.taxYear!==S.taxYear)addLog(`⚠ המסמך הוא לשנת ${p.taxYear} — אך שנת המס שנבחרה היא ${S.taxYear}. ודא שהמסמך נכון.`,'err');
+      if(p.taxYear&&p.taxYear!==S.taxYear)addLog(`❌ שגיאת שנה: המסמך הוא לשנת ${p.taxYear} אך שנת המס שנבחרה היא ${S.taxYear}. יש לתקן את שנת המס בשלב הראשון, או להעלות מסמך מהשנה הנכונה.`,'err');
       if(p.pensionEmployer||p.eduFundEmployer)addLog(`  פנסיה מעסיק: ${fmtN(p.pensionEmployer)} ₪ | קה"ש מעסיק: ${fmtN(p.eduFundEmployer)} ₪`,'ok');
     }catch(e){addLog(`❌ ${e.message}`,'err');extracted.push({source:f.name,ok:false,err:e.message});}
   }
   S.parsed=extracted;
+  // בדיקת אי-תאימות שנה — אם קיים מסמך שאינו תואם לשנת המס הנבחרת, לא ממשיכים לחישוב
+  const yearMismatch=extracted.some(d=>d.ok&&d.taxYear&&d.taxYear!==S.taxYear);
+  if(yearMismatch){set('procMsg','');return;}
   addLog('📊 מחשב החזר מס...');
   set('procMsg','מחשב...');
   await new Promise(r=>setTimeout(r,200));
