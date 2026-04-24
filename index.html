@@ -773,7 +773,7 @@ function calcSurtax(regularInc,capitalInc,yr){
   return{regularSurtax,capitalSurtax,surtaxTotal:regularSurtax+capitalSurtax,threshold,above};
 }
 function calcTax(inc,yr){const{br}=TAX[yr]||TAX[2024];let t=0,p=0;for(const[mx,rt]of br){if(inc<=p)break;const u=mx===Infinity?inc:mx;t+=(Math.min(inc,u)-p)*rt;p=u;if(inc<=p)break;}return Math.max(0,Math.round(t));}
-function calcBr(inc,yr){const{br}=TAX[yr]||TAX[2024];const r=[];let p=0;for(const[mx,rt]of br){if(inc<=p)break;const u=mx===Infinity?inc:mx;const tx=Math.min(inc,u)-p;if(tx>0)r.push({from:p,to:u,rate:rt,tx,tax:Math.round(tx*rt)});p=u;if(inc<=p)break;}return r;}
+function calcBr(inc,yr){const{br}=TAX[yr]||TAX[2024];const r=[];let p=0;for(const[mx,rt]of br){if(inc<=p)break;const u=mx===Infinity?inc:mx;const tx=Math.min(inc,u)-p;if(tx>0)r.push({from:p>0?p+1:0,to:u,rate:rt,tx,tax:Math.round(tx*rt)});p=u;if(inc<=p)break;}return r;}
 // נקודות זיכוי בגין ילד לפי גיל, מין הורה ושנת המס
 // נקודות זיכוי בגין ילד — מקור: כל זכות (kolzchut.org.il)
 // טבלה מסכמת: https://www.kolzchut.org.il/he/נקודות_זיכוי_ממס_הכנסה_להורה_לילד_עד_גיל_18
