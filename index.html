@@ -935,6 +935,7 @@ function parseDoc(text,filename){
     // לדוגמה: ח''ש 82,521 (158/172) כ''הס
     const reStructLine=/\((\d{2,3}(?:\/\d{2,3})*)\)/;
     const isStructured=lns.filter(l=>reStructLine.test(l)&&/\d{3,}/.test(l)).length>=2;
+    console.log('[106 DEBUG] isStructured=',isStructured,'| first 20 lines:\n'+lns.slice(0,20).join('\n'));
     if(isStructured){
       for(const line of lns){
         // שורה עם קוד שדה מפורש בסוגריים
