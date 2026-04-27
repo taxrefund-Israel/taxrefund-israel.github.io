@@ -909,7 +909,9 @@ function parseDoc(text,filename){
     .replace(/(?<=[\d,]) (?=[\d,])/g,'');
   const isUnemp=/אבטל|דמיאבטלה/i.test(norm);
   const isBTL=/ביטוחלאומי/i.test(norm);
-  const is106=/106|חילן|hilan|תשלומיםוניכויים|תעודהעל.?פיתקנות/i.test(norm);
+  // זיהוי פורמט רשות המסים (האזור האישי) — מכיל קודי שדה כגון (158/172) אך לא "106"
+  const isITA106=/\(158\/172\)|\(158[/\\]\d+\)|\(\d+[/\\]172\)|\(042\).*(?:ייוכינ|tax)|תוסנכהלעעדימ|רוזאהמקפוה/i.test(norm);
+  const is106=isITA106||/106|חילן|hilan|תשלומיםוניכויים|תעודהעל.?פיתקנות/i.test(norm);
   const allY=[...text.matchAll(/\b(202[0-5])\b/g)].map(m=>+m[1]);
   if(allY.length){const cnt={};allY.forEach(y=>cnt[y]=(cnt[y]||0)+1);R.taxYear=+Object.entries(cnt).sort((a,b)=>b[1]-a[1])[0][0];}
   if(is106&&!isUnemp){
@@ -938,28 +940,28 @@ function parseDoc(text,filename){
     console.log('[106 DEBUG] isStructured=',isStructured,'| first 20 lines:\n'+lns.slice(0,20).join('\n'));
     if(isStructured){
       for(const line of lns){
-        // שורה עם קוד שדה מפורש בסוגריים
-        const m=line.match(/([\d,]+)\s+\((\d{2,3}(?:\/\d{2,3})*)\)/);
-        if(m){
-          const amount=pN(m[1]);
-          if(!amount)continue;
-          const codes=m[2].split('/').map(Number);
+        // שורה עם קוד שדה מפורש בסוגריים — תומך בשני סדרים:
+        // סדר pdfplumber: AMOUNT (CODE) | סדר PDF.js בדפדפן: (CODE) AMOUNT
+        const mA=line.match(/([\d,]+)\s+\((\d{2,3}(?:\/\d{2,3})*)\)/);  // AMOUNT (CODE)
+        const mB=line.match(/\((\d{2,3}(?:\/\d{2,3})*)\)\s+([\d,]+)/);  // (CODE) AMOUNT
+        let codes=null,amount=0;
+        if(mA){codes=mA[2].split('/').map(Number);amount=pN(mA[1]);}
+        else if(mB){codes=mB[1].split('/').map(Number);amount=pN(mB[2]);}
+        if(codes&&amount){
           if(codes.some(c=>c===158||c===172)){if(!R.grossIncome)R.grossIncome=amount;}
-          else if(codes.some(c=>c===42))      {if(!R.taxWithheld)R.taxWithheld=amount;}
+          else if(codes.some(c=>c===42))     {if(!R.taxWithheld)R.taxWithheld=amount;}
           else if(codes.some(c=>c===45||c===86)){if(!R.pensionEmployee)R.pensionEmployee=amount;}
           else if(codes.some(c=>c===248||c===249)){if(!R.pensionEmployer)R.pensionEmployer=amount;}
           else if(codes.some(c=>c===36||c===81)){if(!R.lifeInsurance)R.lifeInsurance=amount;}
           continue;
         }
-        // שורה ללא קוד שדה — זיהוי קרן השתלמות לפי תיאור (טקסט עברי הפוך בחילוץ PDF)
-        // "תומלתשה ןרקל" = "לקרן השתלמות" הפוך; "קיסעמ" = "מעסיק" הפוך
-        const plain=line.match(/([\d,]+)\s+([֐-׿\s''״]+)/);
-        if(plain){
-          const amount=pN(plain[1]);const desc=plain[2];
-          if(amount>500&&amount<100000&&/תומלתשה[\s'']*ןרקל/.test(desc)){
-            if(/קיסעמ/.test(desc)){if(!R.eduFundEmployer)R.eduFundEmployer=amount;}
-            else{if(!R.eduFundEmployee)R.eduFundEmployee=amount;}
-          }
+        // שורה ללא קוד שדה — קרן השתלמות
+        // תומך בשני סדרים: "תומלתשה ןרקל קיסעמ AMOUNT" ו-"AMOUNT תומלתשה ןרקל קיסעמ"
+        const nums=(line.match(/[\d,]+/g)||[]).map(pN).filter(n=>n>500&&n<100000);
+        if(nums.length&&(/תומלתשה[\s'']*ןרקל|ןרקל[\s'']*תומלתשה|קרן[\s'']*השתלמות/i.test(line))){
+          const amt=nums[0];
+          if(/קיסעמ|מעסיק/i.test(line)){if(!R.eduFundEmployer)R.eduFundEmployer=amt;}
+          else{if(!R.eduFundEmployee)R.eduFundEmployee=amt;}
         }
       }
     }
