@@ -935,22 +935,25 @@ function parseDoc(text,filename){
     // === פורמט מובנה: "ח''ש AMOUNT (CODE/CODE) description" (רשות המסים גרסה 2024+) ===
     // בפורמט זה: הסכום מופיע לפני קוד השדה, והקוד נמצא בסוגריים עם לוכסן בין חלופות
     // לדוגמה: ח''ש 82,521 (158/172) כ''הס
-    const reStructLine=/\((\d{2,3}(?:\/\d{2,3})*)\)/;
+    // זיהוי פורמט מובנה — תומך גם ב-(CODE) וגם ב-)CODE( (סוגריים הפוכים של RTL עברי)
+    const reStructLine=/\((\d{2,3}(?:\/\d{2,3})*)\)|\)(\d{2,3}(?:\/\d{2,3})*)\(/;
     const isStructured=lns.filter(l=>reStructLine.test(l)&&/\d{3,}/.test(l)).length>=2;
-    // DEBUG VISIBLE — מציג את הטקסט הגולמי ישירות בדף (יוסר לאחר האבחון)
-    (()=>{const el=document.getElementById('_dbg106')||document.createElement('div');
-      el.id='_dbg106';el.style.cssText='position:fixed;bottom:0;left:0;right:0;max-height:40vh;overflow:auto;background:#111;color:#0f0;font:11px monospace;z-index:99999;padding:8px;white-space:pre';
-      el.textContent='isITA106='+isITA106+' is106='+is106+' isStructured='+isStructured+'\n\nLINES:\n'+lns.slice(0,25).join('\n');
-      document.body.appendChild(el);})();
     if(isStructured){
       for(const line of lns){
-        // שורה עם קוד שדה מפורש בסוגריים — תומך בשני סדרים:
-        // סדר pdfplumber: AMOUNT (CODE) | סדר PDF.js בדפדפן: (CODE) AMOUNT
-        const mA=line.match(/([\d,]+)\s+\((\d{2,3}(?:\/\d{2,3})*)\)/);  // AMOUNT (CODE)
-        const mB=line.match(/\((\d{2,3}(?:\/\d{2,3})*)\)\s+([\d,]+)/);  // (CODE) AMOUNT
         let codes=null,amount=0;
-        if(mA){codes=mA[2].split('/').map(Number);amount=pN(mA[1]);}
-        else if(mB){codes=mB[1].split('/').map(Number);amount=pN(mB[2]);}
+        // 4 פורמטים אפשריים לסוגריים × סדר קוד/סכום:
+        // m1: (CODE)[text]AMOUNT — סוגריים רגילים, קוד לפני — לדוגמה: (158/172) סה''כ 82,521
+        const m1=line.match(/\((\d{2,3}(?:\/\d{2,3})*)\)[^\d]*([\d,]+)/);
+        // m2: AMOUNT[text](CODE) — סוגריים רגילים, סכום לפני
+        const m2=!m1&&line.match(/([\d,]+)[^\d(]*\((\d{2,3}(?:\/\d{2,3})*)\)/);
+        // m3: )CODE([text]AMOUNT — סוגריים הפוכים RTL, קוד לפני — לדוגמה: )042( 6,553
+        const m3=!m1&&!m2&&line.match(/\)(\d{2,3}(?:\/\d{2,3})*)\([^\d]*([\d,]+)/);
+        // m4: AMOUNT[text])CODE( — סוגריים הפוכים RTL, סכום לפני
+        const m4=!m1&&!m2&&!m3&&line.match(/([\d,]+)[^\d)]*\)(\d{2,3}(?:\/\d{2,3})*)\(/);
+        if(m1){codes=m1[1].split('/').map(Number);amount=pN(m1[2]);}
+        else if(m2){codes=m2[2].split('/').map(Number);amount=pN(m2[1]);}
+        else if(m3){codes=m3[1].split('/').map(Number);amount=pN(m3[2]);}
+        else if(m4){codes=m4[2].split('/').map(Number);amount=pN(m4[1]);}
         if(codes&&amount){
           if(codes.some(c=>c===158||c===172)){if(!R.grossIncome)R.grossIncome=amount;}
           else if(codes.some(c=>c===42))     {if(!R.taxWithheld)R.taxWithheld=amount;}
@@ -959,13 +962,11 @@ function parseDoc(text,filename){
           else if(codes.some(c=>c===36||c===81)){if(!R.lifeInsurance)R.lifeInsurance=amount;}
           continue;
         }
-        // שורה ללא קוד שדה — קרן השתלמות
-        // תומך בשני סדרים: "תומלתשה ןרקל קיסעמ AMOUNT" ו-"AMOUNT תומלתשה ןרקל קיסעמ"
+        // קרן השתלמות — שורות ללא קוד שדה
         const nums=(line.match(/[\d,]+/g)||[]).map(pN).filter(n=>n>500&&n<100000);
-        if(nums.length&&(/תומלתשה[\s'']*ןרקל|ןרקל[\s'']*תומלתשה|קרן[\s'']*השתלמות/i.test(line))){
-          const amt=nums[0];
-          if(/קיסעמ|מעסיק/i.test(line)){if(!R.eduFundEmployer)R.eduFundEmployer=amt;}
-          else{if(!R.eduFundEmployee)R.eduFundEmployee=amt;}
+        if(nums.length&&/קרן\s*השתלמות|תומלתשה[\s'']*ןרקל/i.test(line)){
+          if(/מעסיק|קיסעמ/i.test(line)){if(!R.eduFundEmployer)R.eduFundEmployer=Math.max(...nums);}
+          else{if(!R.eduFundEmployee)R.eduFundEmployee=Math.max(...nums);}
         }
       }
     }
