@@ -71,7 +71,10 @@ if(location.hostname==='taxrefund-israel.github.io')
 {"@type":"Question","name":"מה זה טופס 106 ואיפה מוצאים אותו?","acceptedAnswer":{"@type":"Answer","text":"טופס 106 הוא אישור שנתי שהמעסיק מוציא לעובד ומסכם את הכנסות ותשלומי המס לאורך השנה. ניתן לקבל אותו ממחלקת שכר, דרך מערכות שכר מקוונות כמו חילן (Hilannet) או מיטב, ולעיתים דרך אתר מס הכנסה."}},
 {"@type":"Question","name":"כמה עולה לתבוע החזר מס?","acceptedAnswer":{"@type":"Answer","text":"הבדיקה בסימולטור שלנו חינמית לחלוטין וללא הרשמה. יועץ מס גובה בדרך כלל עמלת הצלחה של 15%–20% מהסכום המוחזר בלבד."}},
 {"@type":"Question","name":"כמה זמן לוקח להחזר מס להגיע?","acceptedAnswer":{"@type":"Answer","text":"לאחר הגשת הבקשה לרשות המסים, ההחזר מגיע בדרך כלל תוך 3–6 חודשים."}},
-{"@type":"Question","name":"האם כדאי להגיש החזר מס לבד?","acceptedAnswer":{"@type":"Answer","text":"אפשר לנסות לבד, אבל יועץ מס מנוסה לרוב מוצא זיכויים שמחזירים יותר ממה שעולה שכרו. הסימולטור שלנו עוזר להבין אם כדאי לפנות לייעוץ מקצועי."}}
+{"@type":"Question","name":"האם כדאי להגיש החזר מס לבד?","acceptedAnswer":{"@type":"Answer","text":"אפשר לנסות לבד, אבל יועץ מס מנוסה לרוב מוצא זיכויים שמחזירים יותר ממה שעולה שכרו. הסימולטור שלנו עוזר להבין אם כדאי לפנות לייעוץ מקצועי."}},
+{"@type":"Question","name":"האם אפשר לקבל החזר מס אם עבדתי רק חצי שנה?","acceptedAnswer":{"@type":"Answer","text":"כן — זוהי אחת הסיבות הנפוצות ביותר להחזר מס. כשעבדתם רק חלק מהשנה, המס נוכה לפי שיעור שנתי מלא אך ההכנסה הייתה נמוכה יותר. ההפרש מוחזר."}},
+{"@type":"Question","name":"האם אישה בחופשת לידה זכאית להחזר מס?","acceptedAnswer":{"@type":"Answer","text":"בהחלט. בשנת לידה, ההכנסה הכוללת לרוב נמוכה מהשנה הרגילה, ונוצל ניצול חלקי בלבד של נקודות הזיכוי. רוב הנשים בחופשת לידה מקבלות החזר מס משמעותי."}},
+{"@type":"Question","name":"האם הסימולטור שומר את הנתונים שלי?","acceptedAnswer":{"@type":"Answer","text":"לא. כל החישוב מתבצע בדפדפן שלך בלבד. אנחנו לא שומרים, לא מעבירים ולא רואים את הנתונים שלך. גם טופס 106 שתעלה נקרא מקומית בלבד ואינו נשלח לשום שרת."}}
 ]}
 </script>
 
@@ -268,8 +271,33 @@ html.gs-mode{filter:grayscale(100%)}
   /* Table — protect from overflow */
   .calc-card{overflow-x:auto}
   /* SEO section padding */
-  section[aria-label="מידע על החזר מס לשכירים"]{padding:28px 12px 24px}
+  .seo-content{padding:28px 12px 24px!important}
 }
+
+/* ── SEO Content Section ── */
+.seo-content{background:#fff;padding:48px 16px 40px;border-top:3px solid #E2E8F0}
+.seo-wrap{max-width:860px;margin:0 auto}
+.seo-wrap>h2{font-size:22px;font-weight:900;color:#0F2744;margin-bottom:10px;line-height:1.35}
+.seo-wrap>p{font-size:14px;color:#4B5563;line-height:1.75;margin-bottom:28px}
+.seo-grid{display:grid;grid-template-columns:1fr;gap:18px;margin-bottom:36px}
+@media(min-width:600px){.seo-grid{grid-template-columns:1fr 1fr}}
+@media(min-width:900px){.seo-grid{grid-template-columns:1fr 1fr 1fr}}
+.seo-card{background:#F8FAFC;border:1.5px solid #E2E8F0;border-radius:14px;padding:20px 18px}
+.seo-card h3{font-size:15px;font-weight:900;color:#0F2744;margin-bottom:10px;line-height:1.4}
+.seo-card p{font-size:13px;color:#374151;line-height:1.75;margin-bottom:8px}
+.seo-card ul{padding-right:18px;margin:8px 0;font-size:13px;color:#374151;line-height:1.85}
+.seo-card ul li{margin-bottom:3px}
+.seo-faq-extra{margin-bottom:28px}
+.seo-faq-extra h2{font-size:19px;font-weight:900;color:#0F2744;margin-bottom:16px}
+.seo-details{border:1.5px solid #E2E8F0;border-radius:10px;margin-bottom:8px;background:#F8FAFC;overflow:hidden}
+.seo-details summary{font-size:14px;font-weight:700;color:#1B4F8A;padding:13px 16px;cursor:pointer;list-style:none;display:flex;align-items:center;gap:8px;user-select:none}
+.seo-details summary::before{content:"▶";font-size:10px;transition:transform .2s;flex-shrink:0}
+.seo-details[open] summary::before{transform:rotate(90deg)}
+.seo-details p{padding:0 16px 14px;font-size:13px;color:#374151;line-height:1.75}
+.seo-cta{background:linear-gradient(135deg,#0F2744,#1a3a6e);border-radius:14px;padding:22px 20px;text-align:center;color:#fff}
+.seo-cta p{font-size:13px;line-height:1.9;color:rgba(210,230,255,.9)}
+.seo-cta a{color:#93C5FD;font-weight:700;text-decoration:none}
+.seo-cta a:hover{text-decoration:underline}
 </style>
 </head>
 <body>
@@ -430,6 +458,126 @@ html.gs-mode{filter:grayscale(100%)}
 </ul>
 
 </div>
+</section>
+
+<!-- ── SEO Content Section ── -->
+<section class="seo-content" aria-label="מידע על החזר מס לשכירים">
+<div class="seo-wrap">
+
+<h2>מדריך מלא: החזר מס לשכירים — כמה מגיע לך ואיך לבדוק?</h2>
+<p>מאות אלפי שכירים בישראל זכאים להחזר מס הכנסה ואינם יודעים זאת. <strong>הסימולטור החינמי שלנו</strong> מאפשר לבדוק תוך דקות כמה כסף מגיע לך — ללא הרשמה, ללא שליחת מסמכים. כל החישוב מתבצע בדפדפן שלך בלבד.</p>
+
+<div class="seo-grid">
+
+<article class="seo-card">
+<h3>מי זכאי להחזר מס לשכיר?</h3>
+<p>רוב השכירים זכאים להחזר מס בגין אחת מהסיבות הנפוצות הבאות:</p>
+<ul>
+  <li><strong>עבודה אצל מספר מעסיקים</strong> במהלך השנה — מס מחושב בנפרד לכל מעסיק</li>
+  <li><strong>חופשת לידה, מחלה או אבטלה</strong> — הכנסה נמוכה יותר מהצפוי</li>
+  <li><strong>ילדים שלא דווחו</strong> — נקודות זיכוי שלא נוצלו</li>
+  <li><strong>מגורים בישוב מזכה</strong> בפריפריה — זיכוי מס נוסף</li>
+  <li><strong>לימודים אקדמיים</strong> — נקודות זיכוי בשנות הלימוד</li>
+  <li><strong>עלייה לישראל</strong> — נקודות זיכוי לעולה חדש</li>
+  <li><strong>תרומות</strong> לעמותות מוכרות — זיכוי 35%</li>
+  <li><strong>פיטורים או התפטרות</strong> — כנסה שנתית נמוכה</li>
+</ul>
+</article>
+
+<article class="seo-card">
+<h3>כמה כסף אפשר לקבל בהחזר מס?</h3>
+<p>ממוצע החזר המס לשכיר בישראל עומד על <strong>3,000–8,000 ₪ לשנה</strong>. במקרים של:</p>
+<ul>
+  <li>חופשת לידה שנה מלאה — עד <strong>15,000 ₪</strong></li>
+  <li>מספר מעסיקים — עד <strong>10,000 ₪</strong></li>
+  <li>ישוב מזכה + ילדים — עד <strong>12,000 ₪</strong></li>
+  <li>6 שנים אחורה (2020–2025) — עד <strong>50,000 ₪ מצטבר</strong></li>
+</ul>
+<p>כל זאת ניתן לבדוק <strong>חינם ומיידית</strong> עם הסימולטור שלנו.</p>
+</article>
+
+<article class="seo-card">
+<h3>עד כמה שנים אחורה מגישים החזר מס?</h3>
+<p>ניתן להגיש בקשה להחזר מס עד <strong>6 שנים אחורה</strong>. בשנת 2026 ניתן לתבוע החזר עבור השנים <strong>2020, 2021, 2022, 2023, 2024 ו-2025</strong>.</p>
+<p>הסימולטור שלנו תומך בכל שש השנים — ניתן להעלות טופס 106 לכל שנה בנפרד ולחשב את ההחזר הצפוי.</p>
+<p><strong>חשוב:</strong> ב-31 בדצמבר 2026 פוקעת הזכאות לשנת 2020. אל תחכו!</p>
+</article>
+
+<article class="seo-card">
+<h3>מה זה טופס 106 ואיך מוצאים אותו?</h3>
+<p>טופס 106 הוא <strong>אישור שנתי מהמעסיק</strong> המסכם את הכנסותיך ותשלומי המס לאורך השנה. לאן לפנות:</p>
+<ul>
+  <li><strong>חילן (Hilannet)</strong> — כניסה לאתר חילן עם קוד עובד</li>
+  <li><strong>מחלקת שכר</strong> — פנייה ישירה למשאבי אנוש</li>
+  <li><strong>מיטב/אחר</strong> — ממשקי שכר דיגיטליים</li>
+  <li><strong>האזור האישי</strong> ברשות המסים — לשנים קודמות</li>
+</ul>
+<p>הסימולטור שלנו קורא את טופס 106 <strong>אוטומטית</strong> דרך OCR מקומי — פשוט גררו את הקובץ.</p>
+</article>
+
+<article class="seo-card">
+<h3>נקודות זיכוי — מה הן ואיך הן משפיעות?</h3>
+<p>כל נקודת זיכוי שווה <strong>2,904 ₪ לשנה</strong> (2025). מקורות נקודות זיכוי נפוצים:</p>
+<ul>
+  <li>תושב ישראל — 2.25 נקודות</li>
+  <li>אישה — 0.5 נקודות נוספות</li>
+  <li>ילד עד גיל 5 — 2.5–4.5 נקודות (לפי שנה וגיל)</li>
+  <li>ילד גיל 6–17 — 1–2 נקודות</li>
+  <li>ישוב מזכה — 0.5–1.25 נקודות</li>
+  <li>השכלה אקדמית — 0.5–1 נקודה</li>
+</ul>
+<p>הסימולטור מחשב את נקודות הזיכוי שלך <strong>אוטומטית</strong> לפי הפרטים שהזנת.</p>
+</article>
+
+<article class="seo-card">
+<h3>ישובים מזכים — מה זה ואיך בודקים?</h3>
+<p>שכירים המתגוררים ב<strong>ישובים מזכים בפריפריה</strong> זכאים לנקודות זיכוי נוספות לפי תקנות מס הכנסה. רשימת הישובים המזכים כוללת מאות יישובים בגליל, בנגב, בגולן ובאזורים נוספים.</p>
+<p>הסימולטור שלנו כולל <strong>רשימה מלאה ומעודכנת</strong> של הישובים המזכים לכל שנת מס — פשוט הקלידו את שם הישוב.</p>
+</article>
+
+</div><!-- /seo-grid -->
+
+<div class="seo-faq-extra">
+<h2>שאלות נפוצות על החזר מס לשכירים</h2>
+
+<details class="seo-details">
+<summary>האם אפשר לקבל החזר מס גם אם עבדתי רק חצי שנה?</summary>
+<p>כן — זוהי אחת הסיבות הנפוצות ביותר להחזר מס. כשעבדתם רק חלק מהשנה, המס נוכה לפי שיעור שנתי מלא אך ההכנסה הייתה נמוכה יותר. ההפרש מוחזר. הגישו בקשה!</p>
+</details>
+
+<details class="seo-details">
+<summary>האם אישה בחופשת לידה זכאית להחזר מס?</summary>
+<p>בהחלט. בשנת לידה, ההכנסה הכוללת (שכר + דמי לידה) לרוב נמוכה מהשנה הרגילה, ונוצף ניצול חלקי בלבד של נקודות הזיכוי. רוב הנשים בחופשת לידה מקבלות החזר מס משמעותי.</p>
+</details>
+
+<details class="seo-details">
+<summary>עבדתי אצל שני מעסיקים — האם מגיע לי החזר?</summary>
+<p>כן. כאשר עובדים אצל שני מעסיקים, כל אחד מנכה מס לפי הנחת הכנסה שנתית מלאה. בפועל, הכנסת שני המעסיקים יחד עשויה להיות נמוכה ממה שנוכה. ברוב המקרים נוצר החזר.</p>
+</details>
+
+<details class="seo-details">
+<summary>האם כדאי להגיש החזר מס לבד או דרך יועץ מס?</summary>
+<p>השתמשו תחילה בסימולטור החינמי שלנו לבדיקה מהירה. אם הסימולטור מראה החזר משמעותי (מעל 2,000 ₪), כדאי לפנות ליועץ מס שיבדוק פרמטרים נוספים שהסימולטור לא מכסה — ייעוץ מס לרוב מוצא יותר.</p>
+</details>
+
+<details class="seo-details">
+<summary>כמה זמן לוקח לקבל את החזר המס לאחר הגשה?</summary>
+<p>לאחר הגשת הבקשה לרשות המסים, ההחזר מגיע בדרך כלל תוך <strong>3–6 חודשים</strong>. בתקופות עמוסות (ינואר–מרץ) זמן הטיפול עשוי להתארך.</p>
+</details>
+
+<details class="seo-details">
+<summary>האם הסימולטור שומר את הנתונים שלי?</summary>
+<p><strong>לא.</strong> כל החישוב מתבצע בדפדפן שלך בלבד. אנחנו לא שומרים, לא מעבירים ולא רואים את הנתונים שלך. גם טופס 106 שתעלה נקרא מקומית בלבד ואינו נשלח לשום שרת.</p>
+</details>
+
+</div><!-- /seo-faq-extra -->
+
+<div class="seo-cta">
+  <p>✅ בדיקה חינמית · ✅ ללא הרשמה · ✅ תוצאה מיידית · ✅ OCR מקומי לטופס 106</p>
+  <p>פותח על ידי <strong><a href="https://www.barshaf-cpa.com" rel="noopener">ברשף יעוץ מס</a></strong> · ייעוץ מס לשכירים ועצמאים</p>
+</div>
+
+</div><!-- /seo-wrap -->
 </section>
 
 <!-- ── Footer ── -->
