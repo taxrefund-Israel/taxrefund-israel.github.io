@@ -930,6 +930,39 @@ function parseDoc(text,filename){
         if(ns.length)return Math.max(...ns);
       }return 0;
     }
+    // === פורמט מובנה: "ח''ש AMOUNT (CODE/CODE) description" (רשות המסים גרסה 2024+) ===
+    // בפורמט זה: הסכום מופיע לפני קוד השדה, והקוד נמצא בסוגריים עם לוכסן בין חלופות
+    // לדוגמה: ח''ש 82,521 (158/172) כ''הס
+    const reStructLine=/\((\d{2,3}(?:\/\d{2,3})*)\)/;
+    const isStructured=lns.filter(l=>reStructLine.test(l)&&/\d{3,}/.test(l)).length>=2;
+    if(isStructured){
+      for(const line of lns){
+        // שורה עם קוד שדה מפורש בסוגריים
+        const m=line.match(/([\d,]+)\s+\((\d{2,3}(?:\/\d{2,3})*)\)/);
+        if(m){
+          const amount=pN(m[1]);
+          if(!amount)continue;
+          const codes=m[2].split('/').map(Number);
+          if(codes.some(c=>c===158||c===172)){if(!R.grossIncome)R.grossIncome=amount;}
+          else if(codes.some(c=>c===42))      {if(!R.taxWithheld)R.taxWithheld=amount;}
+          else if(codes.some(c=>c===45||c===86)){if(!R.pensionEmployee)R.pensionEmployee=amount;}
+          else if(codes.some(c=>c===248||c===249)){if(!R.pensionEmployer)R.pensionEmployer=amount;}
+          else if(codes.some(c=>c===36||c===81)){if(!R.lifeInsurance)R.lifeInsurance=amount;}
+          continue;
+        }
+        // שורה ללא קוד שדה — זיהוי קרן השתלמות לפי תיאור (טקסט עברי הפוך בחילוץ PDF)
+        // "תומלתשה ןרקל" = "לקרן השתלמות" הפוך; "קיסעמ" = "מעסיק" הפוך
+        const plain=line.match(/([\d,]+)\s+([֐-׿\s''״]+)/);
+        if(plain){
+          const amount=pN(plain[1]);const desc=plain[2];
+          if(amount>500&&amount<100000&&/תומלתשה[\s'']*ןרקל/.test(desc)){
+            if(/קיסעמ/.test(desc)){if(!R.eduFundEmployer)R.eduFundEmployer=amount;}
+            else{if(!R.eduFundEmployee)R.eduFundEmployee=amount;}
+          }
+        }
+      }
+    }
+    // === סוף פורמט מובנה ===
     for(let i=0;i<lns.length;i++){
       const line=lns[i];
       // הכנסה ברוטו — סעיף 158 או 172
