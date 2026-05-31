@@ -3,10 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-<!-- הפניה אוטומטית לדומיין הראשי — פועלת רק כשמגיעים מהכתובת הישנה -->
+<!-- הפניה אוטומטית + noindex לדומיין הישן — מונע אינדוקס של github.io -->
 <script>
-if(location.hostname==='taxrefund-israel.github.io')
+if(location.hostname==='taxrefund-israel.github.io'){
+  var m=document.createElement('meta');m.name='robots';m.content='noindex,follow';
+  document.head.appendChild(m);
   location.replace('https://simulator.barshaf-cpa.com'+location.pathname+location.search+location.hash);
+}
 </script>
 
 <!-- ===== Performance ===== -->
