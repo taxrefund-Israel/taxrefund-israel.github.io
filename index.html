@@ -1371,7 +1371,14 @@ async function analyse(){
     addLog(`📄 ${f.name}`);
     try{
       let text='';
-      if(f.type==='application/pdf'){addLog('חולץ טקסט מ-PDF...');text=await extractPdfText(f);addLog(`✔ ${text.length} תווים`,'ok');}
+      if(f.type==='application/pdf'){
+        addLog('חולץ טקסט מ-PDF...');
+        text=await Promise.race([
+          extractPdfText(f),
+          new Promise((_,rej)=>setTimeout(()=>rej(new Error('העיבוד לקח יותר מדי זמן (>45 שניות). נסה להמיר את ה-PDF לתמונה JPG ולהעלות שוב.')),45000))
+        ]);
+        addLog(`✔ ${text.length} תווים`,'ok');
+      }
       else if(f.type.startsWith('image/')){text=await extractImgText(f);addLog(`✔ OCR הושלם`,'ok');}
       else{addLog(`⚠ סוג לא נתמך`,'err');continue;}
       const p=parseDoc(text,f.name);
@@ -1382,9 +1389,16 @@ async function analyse(){
     }catch(e){addLog(`❌ ${e.message}`,'err');extracted.push({source:f.name,ok:false,err:e.message});}
   }
   S.parsed=extracted;
-  // בדיקת אי-תאימות שנה — אם קיים מסמך שאינו תואם לשנת המס הנבחרת, לא ממשיכים לחישוב
+  // בדיקת אי-תאימות שנה — אם קיים מסמך שאינו תואם לשנת המס הנבחרת, חוזרים לשלב 1 עם הסבר
   const yearMismatch=extracted.some(d=>d.ok&&d.taxYear&&d.taxYear!==S.taxYear);
-  if(yearMismatch){set('procMsg','');return;}
+  if(yearMismatch){
+    const bad=extracted.find(d=>d.ok&&d.taxYear&&d.taxYear!==S.taxYear);
+    const msg=bad
+      ?`שגיאת שנה: המסמך "${bad.source}" הוא לשנת ${bad.taxYear}, אך שנת המס שנבחרה היא ${S.taxYear}. תקן את שנת המס בשלב הראשון, או העלה מסמך מהשנה הנכונה.`
+      :'שגיאת שנה: אנא ודא שכל המסמכים הם לשנת המס הנבחרת.';
+    merge({step:1,procMsg:'',err:msg});
+    return;
+  }
   addLog('📊 מחשב החזר מס...');
   set('procMsg','מחשב...');
   await new Promise(r=>setTimeout(r,200));
@@ -1569,7 +1583,9 @@ function r2(){return`<div style="text-align:center;padding:32px 0;animation:fade
 <div class="spinner"></div>
 <h2 style="font-size:20px;font-weight:900;color:#0F2744;margin-bottom:8px">מנתח מסמכים...</h2>
 <p class="blink" style="font-size:14px;color:#6B7280">${S.procMsg||'אנא המתן...'}</p>
-<div class="proc-log" style="text-align:right;margin:14px auto;max-width:500px" aria-live="polite" aria-atomic="false"></div></div>`;}
+<div class="proc-log" style="text-align:right;margin:14px auto;max-width:500px" aria-live="polite" aria-atomic="false"></div>
+<button class="btng" style="margin-top:16px;font-size:13px;opacity:.75" onclick="merge({step:1,procMsg:'',err:''})">✕ ביטול וחזרה להעלאת קבצים</button>
+</div>`;}
 
 function r3(){
   if(!S.result)return'';
