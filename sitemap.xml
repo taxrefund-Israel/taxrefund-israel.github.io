@@ -3,13 +3,19 @@
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://simulator.barshaf-cpa.com/</loc>
-    <lastmod>2026-06-17</lastmod>
+    <lastmod>2026-07-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <image:image>
       <image:loc>https://simulator.barshaf-cpa.com/og-image.png</image:loc>
       <image:title>סימולטור החזר מס לשכירים 2025</image:title>
     </image:image>
+  </url>
+  <url>
+    <loc>https://simulator.barshaf-cpa.com/hachzer-mas-leda/</loc>
+    <lastmod>2026-07-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://simulator.barshaf-cpa.com/privacy.html</loc>
