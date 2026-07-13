@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>מחשבון מקדמות מס וביטוח לאומי 2026 — משרד רו״ח ברשף</title>
+<style>
+  :root { --brand:#1e3a8a; }
+  * { box-sizing: border-box; }
+  body { direction: rtl; text-align: right; font-family: "Segoe UI","Arial Hebrew",Arial,sans-serif;
+         background:#f1f5f9; color:#0f172a; margin:0; padding:0; }
+  .wrap { max-width: 1000px; margin: 0 auto; padding: 24px; }
+  header { background: var(--brand); color:#fff; padding: 18px 24px; }
+  header h1 { margin:0; font-size: 20px; }
+  header p { margin:4px 0 0; font-size: 13px; opacity:.85; }
+  .card { background:#fff; border:1px solid #e2e8f0; border-radius:12px; padding:20px; margin-bottom:18px;
+          box-shadow:0 1px 2px rgba(0,0,0,.04); }
+  h2 { font-size:16px; color:var(--brand); margin:0 0 14px; }
+  .grid { display:grid; grid-template-columns: repeat(auto-fit,minmax(200px,1fr)); gap:14px; }
+  label { display:block; font-size:13px; font-weight:600; color:#334155; margin-bottom:5px; }
+  input, select { width:100%; padding:8px 10px; border:1px solid #cbd5e1; border-radius:8px; font-size:14px; }
+  input:focus, select:focus { outline:none; border-color:var(--brand); box-shadow:0 0 0 2px #1e3a8a33; }
+  .btn { background:var(--brand); color:#fff; border:none; border-radius:8px; padding:10px 18px;
+         font-size:15px; font-weight:600; cursor:pointer; }
+  .btn:hover { background:#1e293b; }
+  .btn-sec { background:#e2e8f0; color:#1e293b; }
+  .child-row { display:flex; gap:10px; align-items:center; margin-bottom:8px; }
+  .child-row input { max-width:140px; }
+  .rm { color:#dc2626; cursor:pointer; font-size:13px; background:none; border:none; }
+  .summary { display:grid; grid-template-columns: repeat(auto-fit,minmax(280px,1fr)); gap:14px; margin-bottom:16px; }
+  .box { border:2px solid; border-radius:12px; padding:16px; }
+  .ok  { background:#f0fdf4; border-color:#86efac; color:#14532d; }
+  .bad { background:#fef2f2; border-color:#fca5a5; color:#7f1d1d; }
+  .box .ttl { font-weight:700; display:flex; justify-content:space-between; margin-bottom:10px; }
+  .row { display:flex; justify-content:space-between; padding:5px 0; }
+  .row.total { font-weight:700; border-top:1px solid #00000022; margin-top:6px; padding-top:8px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; }
+  th,td { border:1px solid #e2e8f0; padding:6px 10px; text-align:right; }
+  th { background:#f8fafc; }
+  .muted { color:#64748b; font-size:12px; }
+  .hidden { display:none; }
+  details summary { cursor:pointer; font-weight:600; color:var(--brand); }
+</style>
+</head>
+<body>
+<header>
+  <h1>מחשבון מקדמות מס וביטוח לאומי — שנת 2026</h1>
+  <p>משרד רו״ח ברשף · עובד לא־מקוון, ללא שרת · כל החישוב מתבצע במחשב שלך</p>
+</header>
+
+<div class="wrap">
+  <div class="card">
+    <h2>פרטי הנישום</h2>
+    <div class="grid">
+      <div>
+        <label>שם הנישום</label>
+        <input id="taxpayerName" type="text" placeholder="לזיהוי בהיסטוריה" />
+      </div>
+      <div>
+        <label>סוג נישום</label>
+        <select id="caseType">
+          <option value="self_employed_only">עצמאי בלבד</option>
+          <option value="employed_only">שכיר בלבד</option>
+          <option value="self_employed_and_employed">עצמאי + שכיר</option>
+        </select>
+      </div>
+      <div>
+        <label>מספר חודשים שנבדקים</label>
+        <select id="months"></select>
+      </div>
+      <div>
+        <label>מין</label>
+        <select id="gender"><option value="male">גבר</option><option value="female">אישה</option></select>
+      </div>
+      <div>
+        <label>מצב משפחתי</label>
+        <select id="marital">
+          <option value="single">רווק/ה</option><option value="married">נשוי/אה</option>
+          <option value="divorced">גרוש/ה</option><option value="widowed">אלמן/ה</option>
+        </select>
+      </div>
+      <div>
+        <label>נקודות זיכוי נוספות</label>
+        <input id="extraPoints" type="number" step="0.25" value="0" />
+      </div>
+    </div>
+    <div style="margin-top:14px">
+      <label>ילדים (שנת לידה)</label>
+      <div id="children"></div>
+      <button class="btn btn-sec" type="button" onclick="addChild()">+ הוסף ילד</button>
+    </div>
+  </div>
+
+  <div class="card" id="businessCard">
+    <h2>נתוני עסק (לתקופה הנבדקת)</h2>
+    <div class="grid">
+      <div><label>מחזור הכנסות</label><input id="revenue" type="number" value="0" oninput="recalcExpenses()" /></div>
+      <div><label>סך הוצאות (מהמאזן)</label><input id="expTotal" type="number" value="0" oninput="recalcExpenses()" /></div>
+    </div>
+
+    <h2 style="margin-top:18px; font-size:14px">חלוקת הוצאות לפי שיעור הכרה</h2>
+    <div class="grid">
+      <div><label>מוכרות במלואן (100%)</label><input id="expFull" type="number" value="0" oninput="recalcExpenses()" /></div>
+      <div><label>רכב (45%)</label><input id="expCar" type="number" value="0" oninput="recalcExpenses()" /></div>
+      <div><label>טלפון נייד (50%)</label><input id="expPhone" type="number" value="0" oninput="recalcExpenses()" /></div>
+      <div><label>כיבוד וביגוד (80%)</label><input id="expHosp" type="number" value="0" oninput="recalcExpenses()" /></div>
+      <div>
+        <label>לא מוכרות (0%) — מולא אוטומטית</label>
+        <input id="expNone" type="number" value="0" readonly style="background:#f1f5f9" />
+      </div>
+    </div>
+    <div id="expSummary" class="muted" style="margin-top:10px"></div>
+
+    <h2 style="margin-top:18px; font-size:14px">מקדמות</h2>
+    <div class="grid">
+      <div><label>אחוז מקדמות מס הכנסה (%)</label><input id="advPct" type="number" step="0.1" value="0" /></div>
+      <div><label>ביטוח לאומי — מקדמה חודשית (₪)</label><input id="niMonthly" type="number" value="0" /></div>
+    </div>
+  </div>
+
+  <div class="card hidden" id="salaryCard">
+    <h2>נתוני שכר (מצטבר לתקופה — מהתלוש)</h2>
+    <div class="grid">
+      <div><label>שכר ברוטו מצטבר</label><input id="salGross" type="number" value="0" /></div>
+      <div><label>מס הכנסה מצטבר</label><input id="salTax" type="number" value="0" /></div>
+    </div>
+    <p class="muted" style="margin-top:8px">ביטוח לאומי ובריאות מהשכר מנוכים ע"י המעסיק ואינם חלק מבדיקת מקדמות העצמאי.</p>
+  </div>
+
+  <div style="margin-bottom:18px">
+    <button class="btn" onclick="calculate()">חשב</button>
+  </div>
+
+  <div id="results"></div>
+
+  <div class="card">
+    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px">
+      <h2 style="margin:0">היסטוריית חישובים (נשמרת מקומית במחשב זה)</h2>
+      <div style="display:flex; gap:8px; flex-wrap:wrap">
+        <button class="btn btn-sec" type="button" onclick="exportHistory()">ייצוא לגיבוי (JSON)</button>
+        <label class="btn btn-sec" style="cursor:pointer">ייבוא מגיבוי
+          <input type="file" accept=".json" onchange="importHistory(event)" style="display:none" />
+        </label>
+        <button class="btn btn-sec" type="button" onclick="clearHistory()" style="background:#fecaca;color:#7f1d1d">נקה הכל</button>
+      </div>
+    </div>
+    <div id="history" style="margin-top:14px"></div>
+  </div>
+
+  <div class="card">
+    <details>
+      <summary>פרמטרי מס 2026 (מובנים)</summary>
+      <p class="muted">מדרגות מס, ביטוח לאומי ונקודות זיכוי — מאומתים מול כל-זכות וביטוח לאומי.
+      לעדכון שנה — ערוך את אובייקט <code>PARAMS</code> בקובץ.</p>
+    </details>
+  </div>
+</div>
+
+<script>
+// ===== פרמטרי 2026 (מאומתים) =====
+const PARAMS = {
+  taxBrackets: [ // [from, to(null=∞), rate%]
+    [0,84120,10],[84120,120720,14],[120720,228000,20],
+    [228000,301200,31],[301200,560280,35],[560280,721560,47],[721560,null,50]
+  ],
+  niBrackets: [ // [from, to, employee%, self%, health%] — חודשי
+    [0,7703,1.04,4.47,3.23],[7703,51910,7.00,12.83,5.17]
+  ],
+  niMonthlyCeiling: 51910,
+  creditPointValue: 2904,
+  basicPointsSingle: 2.25,
+  femaleAddition: 0.5,
+  childPointsByAge: {0:2.5,1:4.5,2:4.5,3:3.5,4:2.5,5:2.5,6:1,7:1,8:1,9:1,10:1,11:1,12:1,13:1,14:1,15:1,16:1,17:1,18:1}
+};
+const TAX_YEAR = 2026;
+
+// ===== מנוע =====
+function applyTaxBrackets(annual){
+  if(annual<=0) return 0; let tax=0;
+  for(const [lo,hi,rate] of PARAMS.taxBrackets){
+    if(annual<=lo) break;
+    const upper = hi===null?annual:hi;
+    const inb = Math.min(annual,upper)-lo;
+    if(inb>0) tax += inb*rate/100;
+  }
+  return tax;
+}
+function creditPoints(gender,marital,children,extra,months){
+  let pts = PARAMS.basicPointsSingle;
+  if(gender==="female") pts += PARAMS.femaleAddition;
+  for(const by of children){
+    const age = TAX_YEAR - by;
+    let p = PARAMS.childPointsByAge[age]||0;
+    if(gender==="female"&&age>=6&&age<=17) p += 1;  // אם: 2 נק' לגיל 6-17 (אב: 1)
+    pts += p;
+  }
+  pts += extra;
+  const value = pts*PARAMS.creditPointValue*(months/12);
+  return {pts, value};
+}
+function niMonthly(monthlyIncome, offset, mode){
+  const capped = Math.max(0, Math.min(monthlyIncome+offset, PARAMS.niMonthlyCeiling)-offset);
+  if(capped<=0) return {ni:0,health:0};
+  let ni=0,health=0,rem=capped;
+  for(const [lo,hi,emp,slf,hlt] of PARAMS.niBrackets){
+    const lower=Math.max(lo,offset), upper=hi===null?(offset+capped):hi;
+    if(upper<=lower) continue;
+    const amt=Math.min(rem, upper-lower);
+    if(amt<=0) continue;
+    ni += amt*(mode==="self"?slf:emp)/100;
+    health += amt*hlt/100;
+    rem-=amt; if(rem<=0) break;
+  }
+  return {ni,health};
+}
+function calcCase(inp){
+  const months=inp.months;
+  const businessTaxable=Math.max(0, inp.revenue-inp.expenses);
+  const salaryTaxable=inp.salGross;
+  const totalTaxable=businessTaxable+salaryTaxable;
+  const projAnnual = months>0 ? totalTaxable*12/months : 0;
+  const taxAnnual=applyTaxBrackets(projAnnual);
+  const taxPeriod=taxAnnual*months/12;
+  const cp=creditPoints(inp.gender,inp.marital,inp.children,inp.extra,months);
+  const taxAfter=Math.max(0,taxPeriod-cp.value);
+
+  const advFromPct=inp.revenue*inp.advPct/100;
+  const taxPaid=inp.salTax+advFromPct;
+  const recPct = inp.revenue>0 ? Math.max(0,taxAfter-inp.salTax)/inp.revenue*100 : 0;  // מכסה רק את יתרת המס שלא נוכתה בשכר
+
+  // ביטוח לאומי — חודשי, שכר ממצה קודם
+  const salaryMonthly = (inp.isEmployed&&months>0)? inp.salGross/months : 0;
+  const bizMonthly = (inp.isSelf&&months>0)? businessTaxable/months : 0;
+  const offset=Math.min(salaryMonthly,PARAMS.niMonthlyCeiling);  // השכר ממצה את המדרגה הנמוכה
+  let seNi=0,seHealth=0;
+  if(bizMonthly>0){ const r=niMonthly(bizMonthly,offset,"self"); seNi=r.ni; seHealth=r.health; }
+  const niExpected=(seNi+seHealth)*months;   // עצמאי בלבד
+  const niPaid=inp.niMonthly*months;          // מקדמות העצמאי בלבד
+  const niRecMonthly = months>0 ? niExpected/months : 0;
+
+  return {businessTaxable,salaryTaxable,totalTaxable,projAnnual,
+    points:cp.pts,creditValue:cp.value,taxAfter,taxPaid,advPct:inp.advPct,advFromPct,recPct,
+    taxGap:taxAfter-taxPaid, niExpected,niPaid,niGap:niPaid-niExpected,niRecMonthly,niMonthlyActual:inp.niMonthly};
+}
+
+// ===== UI =====
+const ils=n=>new Intl.NumberFormat("he-IL",{style:"currency",currency:"ILS",maximumFractionDigits:0}).format(n||0);
+const pct=n=>(n||0).toFixed(1)+"%";
+
+function initMonths(){ const s=document.getElementById("months");
+  for(let i=1;i<=12;i++){const o=document.createElement("option");o.value=i;o.textContent=i;s.appendChild(o);} s.value=6; }
+function addChild(by){ const d=document.getElementById("children");
+  const row=document.createElement("div"); row.className="child-row";
+  row.innerHTML=`<input type="number" placeholder="שנת לידה" value="${by||2020}" />
+    <button class="rm" type="button">הסר</button>`;
+  row.querySelector(".rm").onclick=()=>row.remove(); d.appendChild(row); }
+function getChildren(){ return [...document.querySelectorAll("#children input")].map(i=>parseInt(i.value)||0).filter(Boolean); }
+
+function toggleCards(){
+  const t=document.getElementById("caseType").value;
+  const isSelf=t==="self_employed_only"||t==="self_employed_and_employed";
+  const isEmp=t==="employed_only"||t==="self_employed_and_employed";
+  document.getElementById("businessCard").classList.toggle("hidden",!isSelf);
+  document.getElementById("salaryCard").classList.toggle("hidden",!isEmp);
+}
+document.getElementById("caseType").addEventListener("change",toggleCards);
+
+// חלוקת הוצאות לפי שיעור הכרה. מחזיר את ההוצאה המותרת.
+const EXP_RATES={full:1,car:0.45,phone:0.50,hosp:0.80};
+function recalcExpenses(){
+  const num=id=>parseFloat(document.getElementById(id).value)||0;
+  const total=num("expTotal"), full=num("expFull"), car=num("expCar"), phone=num("expPhone"), hosp=num("expHosp");
+  const none=Math.max(0, total-(full+car+phone+hosp));
+  document.getElementById("expNone").value=Math.round(none*100)/100;
+  const allowed=full*EXP_RATES.full + car*EXP_RATES.car + phone*EXP_RATES.phone + hosp*EXP_RATES.hosp; // none*0
+  const sumParts=full+car+phone+hosp;
+  const el=document.getElementById("expSummary");
+  if(sumParts>total+0.5){
+    el.innerHTML=`<span style="color:#b91c1c">⚠ סך הסעיפים (${ils(sumParts)}) גבוה מסך ההוצאות (${ils(total)}) — תקן את הנתונים.</span>`;
+  } else {
+    el.innerHTML=`סך הוצאה מותרת: <b>${ils(allowed)}</b> · תיאום מס: <b>${ils(total-allowed)}</b> · לא מוכר: ${ils(none)}`;
+  }
+  return {allowed, none, total};
+}
+
+function box(title,good,rows){
+  return `<div class="box ${good?'ok':'bad'}"><div class="ttl"><span>${title}</span>
+    <span style="font-size:13px">${good?'✓ תקין / עודף':'✗ חוסר — להגדיל מקדמה'}</span></div>
+    ${rows.map((r,i)=>`<div class="row ${i===rows.length-1?'total':''}"><span>${r[0]}</span><span>${r[1]}</span></div>`).join("")}</div>`;
+}
+
+function calculate(){
+  const t=document.getElementById("caseType").value;
+  const isSelf=t==="self_employed_only"||t==="self_employed_and_employed";
+  const isEmp=t==="employed_only"||t==="self_employed_and_employed";
+  const num=id=>parseFloat(document.getElementById(id).value)||0;
+  const inp={
+    caseType:t,
+    months:parseInt(document.getElementById("months").value),
+    gender:document.getElementById("gender").value,
+    marital:document.getElementById("marital").value,
+    extra:num("extraPoints"), children:getChildren(),
+    isSelf,isEmployed:isEmp,
+    revenue:isSelf?num("revenue"):0,
+    expTotal:isSelf?num("expTotal"):0, expFull:isSelf?num("expFull"):0,
+    expCar:isSelf?num("expCar"):0, expPhone:isSelf?num("expPhone"):0, expHosp:isSelf?num("expHosp"):0,
+    expenses:isSelf?recalcExpenses().allowed:0,   // הוצאה מותרת אחרי שיעורי הכרה
+    advPct:isSelf?num("advPct"):0, niMonthly:isSelf?num("niMonthly"):0,
+    salGross:isEmp?num("salGross"):0, salTax:isEmp?num("salTax"):0,
+    salNi:0, salHealth:0,
+  };
+  const r=calcCase(inp);
+  const itGood=r.advPct>=r.recPct;
+  const niGood=r.niPaid>=r.niExpected;
+
+  // שמירה להיסטוריה המקומית
+  inp.taxpayerName=document.getElementById("taxpayerName").value||"ללא שם";
+  saveToHistory(inp, r, itGood, niGood);
+
+  document.getElementById("results").innerHTML=`
+    <div class="card">
+      <h2>סיכום תוצאות</h2>
+      <div class="summary">
+        ${box("מס הכנסה — מקדמות",itGood,[
+          ["אחוז מקדמות קיים",pct(r.advPct)],
+          ["אחוז מקדמות מומלץ",pct(r.recPct)],
+          ["פער בכסף",ils(r.taxPaid-r.taxAfter)]
+        ])}
+        ${box("ביטוח לאומי + בריאות",niGood,[
+          ["חבות צפויה",ils(r.niExpected)],
+          ["שולם בפועל",ils(r.niPaid)],
+          ["פער בכסף",ils(r.niPaid-r.niExpected)]
+        ])}
+      </div>
+      <table>
+        ${inp.isSelf?`<tr><th>סך הוצאות</th><td>${ils(inp.expTotal)}</td>
+            <th>הוצאה מותרת (אחרי תיאום)</th><td>${ils(inp.expenses)}</td></tr>
+        <tr><th>תיאום מס</th><td>${ils(inp.expTotal-inp.expenses)}</td>
+            <th>לא מוכר (0%)</th><td>${ils(Math.max(0,inp.expTotal-(inp.expFull+inp.expCar+inp.expPhone+inp.expHosp)))}</td></tr>`:``}
+        <tr><th>הכנסה חייבת מעסק</th><td>${ils(r.businessTaxable)}</td>
+            <th>הכנסה חייבת משכר</th><td>${ils(r.salaryTaxable)}</td></tr>
+        <tr><th>הכנסה חייבת כוללת</th><td>${ils(r.totalTaxable)}</td>
+            <th>נקודות זיכוי</th><td>${r.points.toFixed(2)}</td></tr>
+        <tr><th>מס צפוי (לתקופה)</th><td>${ils(r.taxAfter)}</td>
+            <th>מס ששולם (מקדמות)</th><td>${ils(r.taxPaid)}</td></tr>
+        <tr><th>ביטוח לאומי + בריאות צפוי</th><td>${ils(r.niExpected)}</td>
+            <th>מקדמה חודשית מומלצת</th><td>${ils(r.niRecMonthly)}</td></tr>
+      </table>
+      <p class="muted" style="margin-top:10px">כל החישובים יחסיים לתקופה: מדרגות מס ונקודות זיכוי לפי ${inp.months} חודשים; ביטוח לאומי לפי רווח חודשי ממוצע.</p>
+    </div>`;
+}
+
+// ===== היסטוריה מקומית (localStorage) =====
+const HKEY="tac_calc_history_v1";
+function loadHist(){ try{ return JSON.parse(localStorage.getItem(HKEY)||"[]"); }catch(e){ return []; } }
+function storeHist(arr){ localStorage.setItem(HKEY, JSON.stringify(arr)); }
+
+const CASE_LABELS={self_employed_only:"עצמאי בלבד",employed_only:"שכיר בלבד",self_employed_and_employed:"עצמאי + שכיר"};
+
+function saveToHistory(inp,r,itGood,niGood){
+  const arr=loadHist();
+  arr.unshift({
+    id:Date.now(), date:new Date().toISOString(), inp,
+    summary:{ caseType:inp.caseType,
+      name:inp.taxpayerName, months:inp.months, revenue:inp.revenue,
+      advPct:r.advPct, recPct:r.recPct, taxGap:r.taxPaid-r.taxAfter,
+      niGap:r.niPaid-r.niExpected, itGood, niGood }
+  });
+  if(arr.length>200) arr.length=200;
+  storeHist(arr); renderHistory();
+}
+
+function renderHistory(){
+  const arr=loadHist(); const el=document.getElementById("history");
+  if(!arr.length){ el.innerHTML='<p class="muted">אין עדיין חישובים שמורים. כל לחיצה על "חשב" תישמר כאן.</p>'; return; }
+  el.innerHTML=`<table><tr>
+    <th>תאריך</th><th>שם</th><th>סוג</th><th>חודשים</th><th>מחזור</th>
+    <th>% קיים</th><th>% מומלץ</th><th>פער מס</th><th>פער ב״ל</th><th>פעולות</th></tr>
+    ${arr.map(h=>{const s=h.summary; const d=new Date(h.date);
+      return `<tr>
+        <td>${d.toLocaleDateString("he-IL")} ${d.toLocaleTimeString("he-IL",{hour:"2-digit",minute:"2-digit"})}</td>
+        <td>${s.name}</td><td>${CASE_LABELS[s.caseType]||""}</td><td>${s.months}</td>
+        <td>${ils(s.revenue)}</td><td>${pct(s.advPct)}</td><td>${pct(s.recPct)}</td>
+        <td style="color:${s.itGood?'#15803d':'#b91c1c'}">${ils(s.taxGap)}</td>
+        <td style="color:${s.niGood?'#15803d':'#b91c1c'}">${ils(s.niGap)}</td>
+        <td><button class="rm" onclick="loadHistItem(${h.id})" style="color:#1e3a8a">טען</button>
+            <button class="rm" onclick="delHistItem(${h.id})">מחק</button></td>
+      </tr>`;}).join("")}</table>`;
+}
+
+function loadHistItem(id){
+  const h=loadHist().find(x=>x.id===id); if(!h) return; const i=h.inp;
+  document.getElementById("taxpayerName").value=i.taxpayerName||"";
+  document.getElementById("caseType").value=h.summary.caseType; toggleCards();
+  document.getElementById("months").value=i.months;
+  document.getElementById("gender").value=i.gender;
+  document.getElementById("marital").value=i.marital;
+  document.getElementById("extraPoints").value=i.extra;
+  document.getElementById("revenue").value=i.revenue;
+  document.getElementById("expTotal").value=i.expTotal||0;
+  document.getElementById("expFull").value=i.expFull||0;
+  document.getElementById("expCar").value=i.expCar||0;
+  document.getElementById("expPhone").value=i.expPhone||0;
+  document.getElementById("expHosp").value=i.expHosp||0;
+  recalcExpenses();
+  document.getElementById("advPct").value=i.advPct;
+  document.getElementById("niMonthly").value=i.niMonthly;
+  document.getElementById("salGross").value=i.salGross;
+  document.getElementById("salTax").value=i.salTax;
+  document.getElementById("children").innerHTML=""; (i.children||[]).forEach(by=>addChild(by));
+  calculate(); window.scrollTo({top:0,behavior:"smooth"});
+}
+function delHistItem(id){ storeHist(loadHist().filter(x=>x.id!==id)); renderHistory(); }
+function clearHistory(){ if(confirm("למחוק את כל היסטוריית החישובים במחשב זה?")){ storeHist([]); renderHistory(); } }
+
+function exportHistory(){
+  const blob=new Blob([JSON.stringify(loadHist(),null,2)],{type:"application/json"});
+  const a=document.createElement("a"); a.href=URL.createObjectURL(blob);
+  a.download="calc-history-"+new Date().toISOString().slice(0,10)+".json"; a.click();
+}
+function importHistory(ev){
+  const f=ev.target.files[0]; if(!f) return; const rd=new FileReader();
+  rd.onload=()=>{ try{
+    const imported=JSON.parse(rd.result); if(!Array.isArray(imported)) throw 0;
+    const merged=[...imported,...loadHist()];
+    const seen=new Set(); const dedup=merged.filter(x=>seen.has(x.id)?false:seen.add(x.id));
+    dedup.sort((a,b)=>b.id-a.id); storeHist(dedup); renderHistory();
+    alert("היובא הושלם — "+imported.length+" רשומות");
+  }catch(e){ alert("קובץ לא תקין"); } };
+  rd.readAsText(f); ev.target.value="";
+}
+
+initMonths(); toggleCards(); renderHistory();  // ללא ילד ברירת מחדל
+</script>
+</body>
+</html>

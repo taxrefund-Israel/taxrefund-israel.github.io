@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Barshaf CPA – Accounting Firm in Rishon LeZion</title>
+  <meta name="description" content="Barshaf CPA – Business consulting, tax planning, accounting and auditing in Rishon LeZion. Over a decade of experience.">
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="canonical" href="https://barshaf-cpa.com/en.html">
+  <link rel="alternate" hreflang="he" href="https://barshaf-cpa.com/">
+  <link rel="alternate" hreflang="en" href="https://barshaf-cpa.com/en.html">
+
+  <!-- Google Analytics 4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-5XJ72CXK3V"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-5XJ72CXK3V');
+  </script>
+
+  <!-- Schema.org – AccountingService (English) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "AccountingService",
+    "name": "Barshaf CPA",
+    "url": "https://barshaf-cpa.com/en.html",
+    "logo": "https://barshaf-cpa.com/logo.png",
+    "image": "https://barshaf-cpa.com/logo.png",
+    "description": "Barshaf CPA – Business consulting, tax planning, accounting and auditing in Rishon LeZion. Over a decade of experience.",
+    "telephone": "+972-3-9108014",
+    "faxNumber": "+972-3-9108015",
+    "email": "info@barshaf-cpa.com",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "27 Rothschild St.",
+      "addressLocality": "Rishon LeZion",
+      "postalCode": "7500101",
+      "addressCountry": "IL"
+    },
+    "openingHoursSpecification": [
+      {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": ["Sunday","Monday","Tuesday","Wednesday","Thursday"],
+        "opens": "07:00",
+        "closes": "19:00"
+      }
+    ],
+    "priceRange": "$$"
+  }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    @font-face {
+      font-family: 'almoni-dl-aaa-300';
+      src: url('https://static.parastorage.com/fonts/v2/5b763edb-ddf0-42b5-bdb6-ad597cac5246/v1/almoni-dl-aaa-300.woff2') format('woff2');
+      font-weight: 300; font-display: swap;
+    }
+    @font-face {
+      font-family: 'almoni-dl-aaa-400';
+      src: url('https://static.parastorage.com/fonts/v2/76d80fe4-b79d-4bef-a3db-00137d89108f/v1/almoni-dl-aaa-400.woff2') format('woff2');
+      font-weight: 400; font-display: swap;
+    }
+    @font-face {
+      font-family: 'almoni-dl-aaa-700';
+      src: url('https://static.parastorage.com/fonts/v2/70866fe5-6b83-4766-9492-72b6a07a286c/v1/almoni-dl-aaa-700.woff2') format('woff2');
+      font-weight: 400; font-display: swap;
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root { --gold: #BF9B30; --dark: #1B1B1E; }
+
+    html { scroll-behavior: smooth; }
+    body { direction: ltr; }
+
+    /* ── Language toggle ── */
+    .lang-toggle {
+      position: fixed;
+      top: 18px;
+      left: 24px;
+      z-index: 1001;
+      display: flex;
+      direction: ltr;
+      font-family: 'almoni-dl-aaa-300', sans-serif;
+      font-size: 14px;
+      border: 1px solid rgba(255,255,255,0.7);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .lang-toggle a {
+      padding: 3px 8px;
+      text-decoration: none;
+      color: rgba(255,255,255,0.6);
+      background: transparent;
+    }
+    .lang-toggle a.active {
+      color: #fff;
+      background: rgba(255,255,255,0.2);
+    }
+    .lang-toggle span {
+      color: rgba(255,255,255,0.4);
+      padding: 3px 0;
+    }
+
+    /* ── Navigation bar ── */
+    #navbar {
+      position: fixed;
+      top: 0; width: 100%;
+      z-index: 999;
+      padding: 16px 0;
+      display: flex;
+      justify-content: center;
+      gap: 0;
+    }
+
+    #navbar a {
+      font-family: 'almoni-dl-aaa-300', sans-serif;
+      font-size: 28px;
+      font-weight: 400;
+      color: #fff;
+      text-decoration: none;
+      padding: 4px 18px;
+      transition: color 0.25s;
+    }
+
+    /* ── Side navigation dots ── */
+    .side-dots {
+      position: fixed;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 998;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .side-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(255,255,255,0.65);
+      background: transparent;
+      cursor: pointer;
+      padding: 0;
+      position: relative;
+      transition: background 0.25s, border-color 0.25s;
+    }
+
+    .side-dot.active { background: rgba(255,255,255,0.65); }
+
+    .side-dot::after {
+      content: attr(data-label);
+      position: absolute;
+      left: calc(100% + 10px);
+      top: 50%;
+      transform: translateY(-50%);
+      font-family: 'almoni-dl-aaa-300', sans-serif;
+      font-size: 13px;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+      color: rgba(255,255,255,0.9);
+    }
+
+    .side-dot:hover::after { opacity: 1; }
+
+    .side-dots.on-gold .side-dot { border-color: rgba(0,0,0,0.35); }
+    .side-dots.on-gold .side-dot.active { background: rgba(0,0,0,0.35); }
+    .side-dots.on-gold .side-dot::after { color: rgba(0,0,0,0.7); }
+
+    /* ── Hero ── */
+    #home {
+      position: relative;
+      height: 100vh;
+      min-height: 620px;
+      background-color: var(--gold);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .hero-logo {
+      width: 560px;
+      max-width: 80vw;
+    }
+
+    .hero-rule {
+      width: 515px;
+      max-width: 80vw;
+      height: 5px;
+      background: transparent;
+      border-top: 1px solid #fff;
+      margin: 16px 0 12px;
+    }
+
+    .hero-title {
+      font-family: 'almoni-dl-aaa-300', sans-serif;
+      font-size: 90px;
+      font-weight: 300;
+      color: #000;
+      line-height: 1;
+      text-align: center;
+    }
+
+    .hero-sub {
+      font-family: 'almoni-dl-aaa-300', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: #fff;
+      margin-top: 36px;
+      text-align: center;
+      letter-spacing: 5px;
+    }
+
+    .hero-sub a { color: #fff; text-decoration: none; }
+
+    /* ── Section decorator ── */
+    .sec-rule {
+      position: absolute;
+      top: 36px;
+      left: 60px;
+      width: 51px;
+      height: 0;
+      border-top: 12px solid transparent;
+    }
+
+    .sec-rule-white { border-top-color: #fff; }
+    .sec-rule-dark  { border-top-color: #000; }
+
+    /* ── Services ── */
+    #services {
+      position: relative;
+      background-color: var(--dark);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: stretch;
+      padding: 80px 80px;
+      min-height: 65vh;
+    }
+
+    .services-heading {
+      font-family: 'almoni-dl-aaa-400', sans-serif;
+      font-size: 80px;
+      font-weight: 700;
+      color: #fff;
+      text-align: left;
+      line-height: 0.9;
+      margin-bottom: 55px;
+    }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-rows: repeat(2, auto);
+      grid-auto-flow: column;
+      direction: ltr;
+      gap: 50px 60px;
+      width: 100%;
+    }
+
+    .service-item {
+      direction: ltr;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      font-family: 'almoni-dl-aaa-400', sans-serif;
+      font-size: 18px;
+      font-weight: 400;
+      color: #fff;
+    }
+
+    .service-item::before {
+      content: '';
+      width: 35px;
+      height: 0;
+      border-top: 8px solid var(--gold);
+      margin-bottom: 12px;
+      flex-shrink: 0;
+    }
+
+    /* ── About ── */
+    #about {
+      position: relative;
+      background-color: var(--dark);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: stretch;
+      padding: 80px 80px;
+      min-height: 60vh;
+    }
+
+    .about-heading {
+      font-family: 'almoni-dl-aaa-700', sans-serif;
+      font-size: 80px;
+      font-weight: 400;
+      color: #fff;
+      text-align: left;
+      line-height: 0.9;
+      margin-bottom: 40px;
+    }
+
+    .about-text {
+      font-family: 'almoni-dl-aaa-300', sans-serif;
+      font-size: 19px;
+      font-weight: 300;
+      line-height: 30.4px;
+      color: #fff;
+      text-align: left;
+      max-width: 860px;
+    }
+
+    /* ── Contact ── */
+    #contact {
+      position: relative;
+      background-color: var(--gold);
+      min-height: 80vh;
+      display: flex;
+      flex-direction: row;
+      align-items: flex-start;
+      padding: 80px 80px;
+      gap: 60px;
+    }
+
+    .contact-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      padding-top: 60px;
+    }
+
+    .contact-heading {
+      font-family: 'almoni-dl-aaa-700', sans-serif;
+      font-size: 80px;
+      font-weight: 400;
+      color: #000;
+      text-align: left;
+      line-height: 0.9;
+      margin-bottom: 28px;
+    }
+
+    .contact-label {
+      font-family: 'almoni-dl-aaa-400', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: #000;
+      text-decoration: underline;
+      text-align: left;
+      margin-top: 22px;
+    }
+
+    .contact-value {
+      font-family: 'almoni-dl-aaa-400', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: #000;
+      text-align: left;
+      line-height: 1.5;
+    }
+
+    .contact-value a { color: #000; text-decoration: none; }
+    .contact-value a:hover { text-decoration: underline; }
+
+    .contact-map {
+      flex: 1.2;
+      height: 380px;
+      align-self: center;
+    }
+
+    .contact-map iframe { width: 100%; height: 100%; border: 0; }
+
+    /* ── Footer ── */
+    footer {
+      background-color: var(--dark);
+      padding: 24px 60px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .footer-copy {
+      font-family: 'Raleway', sans-serif;
+      font-size: 14px;
+      color: #fff;
+    }
+
+    .footer-fb iframe {
+      display: block;
+      border: none;
+      overflow: hidden;
+    }
+
+    /* ── Tablet (≤900px) ── */
+    @media (max-width: 900px) {
+      #navbar a { font-size: 18px; padding: 4px 10px; }
+      .hero-logo { width: 80vw; }
+      .hero-rule { width: 80vw; }
+      .hero-title { font-size: 52px; }
+      .hero-sub { font-size: 15px; letter-spacing: 2px; }
+      #services { padding: 70px 30px 60px; }
+      .services-heading { font-size: 50px; }
+      .services-grid {
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: repeat(4, auto);
+      }
+      #about { padding: 60px 30px; }
+      .about-heading { font-size: 50px; }
+      .about-text { font-size: 16px; }
+      #contact { flex-direction: column; padding: 60px 30px; gap: 30px; }
+      .contact-map { width: 100%; height: 260px; flex: none; align-self: stretch; }
+      .contact-heading { font-size: 50px; }
+      .sec-rule { left: 30px; top: 24px; }
+      footer { padding: 20px 30px; }
+      .side-dots { display: none; }
+    }
+
+    /* ── Phone (≤480px) ── */
+    @media (max-width: 480px) {
+      #navbar { padding: 10px 0; }
+      #navbar a { font-size: 13px; padding: 3px 5px; }
+
+      .hero-logo { width: 88vw; }
+      .hero-rule { width: 88vw; }
+      .hero-title { font-size: 36px; }
+      .hero-sub {
+        font-size: 12px;
+        letter-spacing: 0.5px;
+        padding: 0 12px;
+        line-height: 1.8;
+      }
+
+      #services { padding: 60px 20px 50px; }
+      .services-heading { font-size: 38px; }
+      .services-grid { grid-template-columns: 1fr 1fr; gap: 28px 20px; }
+      .service-item { font-size: 15px; }
+
+      #about { padding: 50px 20px; }
+      .about-heading { font-size: 38px; }
+      .about-text { font-size: 15px; line-height: 26px; }
+
+      #contact { padding: 50px 20px; gap: 24px; }
+      .contact-heading { font-size: 38px; }
+      .contact-label { font-size: 17px; }
+      .contact-value { font-size: 17px; }
+      .contact-map { height: 220px; }
+
+      footer {
+        flex-direction: column;
+        align-items: center;
+        padding: 20px 16px;
+        gap: 12px;
+      }
+      .footer-fb iframe { max-width: 100%; }
+      .sec-rule { left: 20px; top: 20px; }
+    }
+
+    /* ── Google reviews ── */
+    #reviews {
+      position: relative; background: #F5F2EA; padding: 80px 80px;
+      display: none; flex-direction: column; align-items: center; text-align: center;
+    }
+    #reviews.is-ready { display: flex; }
+    .reviews-heading {
+      font-family: 'almoni-dl-aaa-700', sans-serif;
+      font-size: 64px; font-weight: 400; color: var(--dark); line-height: 0.95; margin-bottom: 18px;
+    }
+    .reviews-summary { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 6px; flex-wrap: wrap; }
+    .reviews-avg { font-family: 'almoni-dl-aaa-700', sans-serif; font-size: 40px; color: var(--dark); line-height: 1; }
+    .stars { display: inline-flex; gap: 2px; }
+    .stars svg { width: 26px; height: 26px; }
+    .star-full { fill: var(--gold); }
+    .star-empty { fill: #d9d2c2; }
+    .reviews-count { font-family: 'almoni-dl-aaa-300', sans-serif; font-size: 18px; color: #6b6455; }
+    .reviews-google { display: inline-flex; align-items: center; gap: 7px; font-family: 'almoni-dl-aaa-400', sans-serif; font-size: 16px; color: #6b6455; margin-bottom: 34px; }
+    .reviews-google img { width: 18px; height: 18px; }
+    .reviews-track { width: 100%; max-width: 760px; position: relative; min-height: 220px; }
+    .review-card { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; opacity: 0; visibility: hidden; transition: opacity 0.6s ease; padding: 0 10px; }
+    .review-card.active { opacity: 1; visibility: visible; }
+    .review-card .stars { margin-bottom: 16px; }
+    .review-card .stars svg { width: 20px; height: 20px; }
+    .review-text { font-family: 'almoni-dl-aaa-300', sans-serif; font-size: 21px; line-height: 1.6; color: #2a2822; text-align: center; margin-bottom: 8px; max-height: 132px; overflow: hidden; }
+    .review-translated { font-family: 'almoni-dl-aaa-300', sans-serif; font-size: 12px; color: #9a9484; margin-bottom: 16px; display: inline-flex; align-items: center; gap: 4px; }
+    .review-meta { display: flex; align-items: center; gap: 12px; }
+    .review-avatar { width: 42px; height: 42px; border-radius: 50%; background: var(--gold); color: #fff; object-fit: cover; display: flex; align-items: center; justify-content: center; font-family: 'almoni-dl-aaa-700', sans-serif; font-size: 20px; }
+    .review-author { font-family: 'almoni-dl-aaa-400', sans-serif; font-size: 18px; color: var(--dark); text-align: left; }
+    .review-when { font-family: 'almoni-dl-aaa-300', sans-serif; font-size: 14px; color: #8a8474; text-align: left; }
+    .reviews-dots { display: flex; gap: 10px; margin-top: 26px; }
+    .reviews-dot { width: 9px; height: 9px; border-radius: 50%; border: none; background: #d3ccbb; cursor: pointer; padding: 0; transition: background 0.25s; }
+    .reviews-dot.active { background: var(--gold); }
+    .reviews-cta { margin-top: 30px; background: var(--dark); color: #fff; font-family: 'almoni-dl-aaa-400', sans-serif; font-size: 18px; padding: 14px 36px; text-decoration: none; }
+    .reviews-cta:hover { background: #000; }
+    @media (max-width: 900px) {
+      #reviews { padding: 60px 30px; }
+      .reviews-heading { font-size: 46px; }
+      .review-text { font-size: 19px; }
+    }
+    @media (max-width: 600px) {
+      #reviews { padding: 50px 20px; }
+      .reviews-heading { font-size: 36px; }
+      .reviews-avg { font-size: 32px; }
+      .stars svg { width: 22px; height: 22px; }
+      .review-text { font-size: 17px; }
+      .reviews-track { min-height: 260px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Language toggle ── -->
+  <div class="lang-toggle">
+    <a href="/">HE</a>
+    <span>|</span>
+    <a href="/en.html" class="active">EN</a>
+  </div>
+
+  <!-- ── Side navigation dots ── -->
+  <nav class="side-dots" id="sideDots" aria-label="Page navigation">
+    <button class="side-dot active" data-target="home"     data-label="Home"></button>
+    <button class="side-dot"        data-target="services" data-label="Services"></button>
+    <button class="side-dot"        data-target="about"    data-label="About"></button>
+    <button class="side-dot"        data-target="contact"  data-label="Contact"></button>
+  </nav>
+
+  <!-- ── Top navigation ── -->
+  <nav id="navbar">
+    <a href="#home">Home</a>
+    <a href="#services">Services</a>
+    <a href="#about">About</a>
+    <a href="#contact">Contact</a>
+  </nav>
+
+  <!-- ── Hero ── -->
+  <section id="home">
+    <img class="hero-logo"
+         src="logo.png"
+         alt="Barshaf CPA – Rishon LeZion">
+    <div class="hero-rule"></div>
+    <h1 class="hero-title">Barshaf CPA</h1>
+    <p class="hero-sub">
+      27 Rothschild St., Rishon LeZion &nbsp;|&nbsp; 03.9108014 &nbsp;|&nbsp;
+      <a href="mailto:info@barshaf-cpa.com">info@barshaf-cpa.com</a>
+    </p>
+  </section>
+
+  <!-- ── Services ── -->
+  <section id="services">
+    <div class="sec-rule sec-rule-white"></div>
+    <h2 class="services-heading">Our Services</h2>
+    <div class="services-grid">
+      <div class="service-item">Business Consulting &amp; Valuations</div>
+      <div class="service-item">Tax Authority Representation</div>
+      <div class="service-item">Tax Advisory &amp; Planning</div>
+      <div class="service-item">Business Setup Assistance</div>
+      <div class="service-item">Payroll &amp; Financial Management</div>
+      <div class="service-item">Employee Tax Refunds</div>
+      <div class="service-item">Accounting &amp; Auditing</div>
+      <div class="service-item">Annual Reports for Self-Employed</div>
+    </div>
+  </section>
+
+  <!-- ── About ── -->
+  <section id="about">
+    <div class="sec-rule sec-rule-white"></div>
+    <h2 class="about-heading">About</h2>
+    <p class="about-text">
+      Barshaf CPA is an accounting firm with over a decade of expertise in accounting and business advisory services.
+      The firm was founded by CPA Yaniv Barshaf and serves both large and small businesses, with local and international operations.
+      CPA Barshaf held senior management positions at Somekh Chaikin (KPMG) and serves as a faculty member at the Interdisciplinary Center Herzliya
+      and the College of Management Academic Studies, teaching financial and managerial accounting.
+      CPA Barshaf holds a B.A. in Business Administration (Accounting) and an M.B.A. in Finance (with distinction), both from the
+      College of Management Academic Studies.
+      His extensive experience guarantees professional, uncompromising service while maintaining a direct and personal relationship with every client.
+    </p>
+  </section>
+
+  <!-- ── Google reviews (live via reviews.barshaf-cpa.com Worker, translated) ── -->
+  <section id="reviews" aria-label="Customer reviews from Google">
+    <div class="sec-rule sec-rule-dark" style="border-top-color: var(--gold);"></div>
+    <h2 class="reviews-heading">What our clients say</h2>
+    <div class="reviews-summary">
+      <span class="reviews-avg" id="rv-avg"></span>
+      <span class="stars" id="rv-avg-stars"></span>
+    </div>
+    <div class="reviews-count" id="rv-count"></div>
+    <div class="reviews-google">
+      <img src="https://www.google.com/favicon.ico" alt="Google" width="18" height="18" loading="lazy">
+      <span>Verified reviews on Google</span>
+    </div>
+
+    <div class="reviews-track" id="rv-track"></div>
+    <div class="reviews-dots" id="rv-dots"></div>
+
+    <a class="reviews-cta" id="rv-cta" href="#" target="_blank" rel="noopener">Read all reviews on Google →</a>
+  </section>
+  <script>
+  (function () {
+    var ENDPOINT = "https://reviews.barshaf-cpa.com/?lang=en";
+    var ROTATE_MS = 5000;
+
+    function starSvg(filled) {
+      return '<svg viewBox="0 0 24 24" class="' + (filled ? 'star-full' : 'star-empty') +
+        '"><path d="M12 2l2.9 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77 5.82 21l1.18-6.88-5-4.87 7.1-1.01L12 2z"/></svg>';
+    }
+    function stars(rating) {
+      var r = Math.round(rating || 0), html = "";
+      for (var i = 1; i <= 5; i++) html += starSvg(i <= r);
+      return html;
+    }
+    function escapeHtml(s) {
+      return (s || "").replace(/[&<>"]/g, function (c) {
+        return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
+      });
+    }
+
+    fetch(ENDPOINT)
+      .then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); })
+      .then(function (data) {
+        if (!data || data.error) return;
+        var reviews = (data.reviews || []).filter(function (rv) { return rv.text && rv.text.trim(); });
+        if (!reviews.length && !data.rating) return;
+
+        document.getElementById("rv-avg").textContent = (data.rating || 0).toFixed(1);
+        document.getElementById("rv-avg-stars").innerHTML = stars(data.rating);
+        document.getElementById("rv-count").textContent =
+          "Based on " + (data.total || reviews.length) + " Google reviews";
+        if (data.mapsUri) document.getElementById("rv-cta").href = data.mapsUri;
+
+        var track = document.getElementById("rv-track");
+        var dotsWrap = document.getElementById("rv-dots");
+        reviews.forEach(function (rv, i) {
+          var initial = (rv.author || "?").trim().charAt(0);
+          var avatar = rv.photo
+            ? '<img class="review-avatar" src="' + escapeHtml(rv.photo) + '" alt="' + escapeHtml(rv.author) + '" loading="lazy">'
+            : '<span class="review-avatar">' + escapeHtml(initial) + '</span>';
+          var translatedNote = rv.translated
+            ? '<span class="review-translated">Translated from Hebrew by Google</span>'
+            : "";
+          var card = document.createElement("div");
+          card.className = "review-card" + (i === 0 ? " active" : "");
+          card.innerHTML =
+            '<span class="stars">' + stars(rv.rating) + '</span>' +
+            '<p class="review-text">"' + escapeHtml(rv.text) + '"</p>' + translatedNote +
+            '<div class="review-meta">' + avatar +
+            '<div><div class="review-author">' + escapeHtml(rv.author || "Client") + '</div>' +
+            '<div class="review-when">' + escapeHtml(rv.when || "") + '</div></div></div>';
+          track.appendChild(card);
+
+          var dot = document.createElement("button");
+          dot.className = "reviews-dot" + (i === 0 ? " active" : "");
+          dot.setAttribute("aria-label", "Review " + (i + 1));
+          dot.addEventListener("click", function () { go(i); });
+          dotsWrap.appendChild(dot);
+        });
+
+        document.getElementById("reviews").classList.add("is-ready");
+
+        var cards = track.querySelectorAll(".review-card");
+        var dots = dotsWrap.querySelectorAll(".reviews-dot");
+        var idx = 0, timer;
+        function go(n) {
+          cards[idx].classList.remove("active");
+          dots[idx].classList.remove("active");
+          idx = (n + cards.length) % cards.length;
+          cards[idx].classList.add("active");
+          dots[idx].classList.add("active");
+          restart();
+        }
+        function restart() {
+          if (cards.length < 2) return;
+          clearInterval(timer);
+          timer = setInterval(function () { go(idx + 1); }, ROTATE_MS);
+        }
+        restart();
+      })
+      .catch(function () { /* stay hidden on any error */ });
+  })();
+  </script>
+
+  <!-- ── Contact ── -->
+  <section id="contact">
+    <div class="sec-rule sec-rule-dark"></div>
+    <div class="contact-info">
+      <h2 class="contact-heading">Contact Us</h2>
+      <p class="contact-label">Office Address</p>
+      <p class="contact-value">27 Rothschild St., Rishon LeZion</p>
+      <p class="contact-label">Mailing Address</p>
+      <p class="contact-value">P.O. Box 15379, Rishon LeZion 7500101</p>
+      <p class="contact-value" style="margin-top:22px">t – 03.9108014</p>
+      <p class="contact-value">f – 03.9108015</p>
+      <p class="contact-value" style="margin-top:6px">
+        <a href="mailto:info@barshaf-cpa.com">info@barshaf-cpa.com</a>
+      </p>
+    </div>
+    <div class="contact-map">
+      <iframe
+        src="https://maps.google.com/maps?q=ברשף+רואי+חשבון+ראשון+לציון&hl=en&z=15&output=embed"
+        title="Office Location"
+        allowfullscreen
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade">
+      </iframe>
+    </div>
+  </section>
+
+  <!-- ── Footer ── -->
+  <footer>
+    <p class="footer-copy">
+      © 2017 Barshaf C.P.A. &nbsp;|&nbsp;
+      <a href="https://simulator.barshaf-cpa.com/" style="color:var(--gold);text-decoration:none">Free Tax Refund Simulator</a>
+    </p>
+    <div class="footer-fb">
+      <iframe
+        src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Fbarshaf.cpa&tabs&width=340&height=130&small_header=true&adapt_container_width=true&hide_cover=false&show_facepile=true"
+        width="340" height="130"
+        style="border:none;overflow:hidden"
+        scrolling="no"
+        frameborder="0"
+        allowfullscreen="true"
+        allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share">
+      </iframe>
+    </div>
+  </footer>
+
+  <!-- ── Accessibility widget ── -->
+  <script src="https://cdn.enable.co.il/licenses/enable-L20572fwk9j7036p-0623-47042/init.js"></script>
+
+  <script>
+    const navbar   = document.getElementById('navbar');
+    const sideDots = document.getElementById('sideDots');
+    const sections = ['home', 'services', 'about', 'contact'];
+
+    document.querySelectorAll('#navbar a, .side-dot').forEach(el => {
+      el.addEventListener('click', e => {
+        e.preventDefault();
+        const targetId = el.getAttribute('href')
+          ? el.getAttribute('href').slice(1)
+          : el.dataset.target;
+        const target = document.getElementById(targetId);
+        if (target) target.scrollIntoView({ behavior: 'smooth' });
+      });
+    });
+
+    function updateUI() {
+      const y = window.scrollY + window.innerHeight / 2;
+      let currentId = 'home';
+
+      sections.forEach(id => {
+        const el = document.getElementById(id);
+        if (el && el.offsetTop <= y) currentId = id;
+      });
+
+      const servicesTop = document.getElementById('services').offsetTop;
+      const contactTop  = document.getElementById('contact').offsetTop;
+      const scrollY     = window.scrollY;
+      const onDark = scrollY >= servicesTop - 80 && scrollY < contactTop - 80;
+      navbar.classList.toggle('on-dark', onDark);
+
+      const isGold = currentId === 'home' || currentId === 'contact';
+      sideDots.classList.toggle('on-gold', isGold);
+
+      document.querySelectorAll('.side-dot').forEach(d => {
+        d.classList.toggle('active', d.dataset.target === currentId);
+      });
+    }
+
+    window.addEventListener('scroll', updateUI, { passive: true });
+    updateUI();
+  </script>
+
+</body>
+</html>

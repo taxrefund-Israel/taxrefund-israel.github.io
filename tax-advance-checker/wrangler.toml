@@ -1,0 +1,12 @@
+# פריסת הכלי הציבורי ל-Cloudflare (Worker עם נכסים סטטיים).
+# פריסה:  npx wrangler deploy   (מתיקיית tax-advance-checker)
+name = "solitary-shape-bff2"
+compatibility_date = "2025-01-01"
+workers_dev = true
+
+routes = [
+  { pattern = "advance.barshaf-cpa.com", custom_domain = true }
+]
+
+[assets]
+directory = "./public-tool"

@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{TITLE}} – ברשף רואי חשבון</title>
+  <meta name="description" content="{{DESCRIPTION}}">
+  <link rel="icon" type="image/png" href="../favicon.png">
+  <link rel="canonical" href="https://barshaf-cpa.com/blog/{{SLUG}}.html">
+
+  <!-- Google Analytics 4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-5XJ72CXK3V"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-5XJ72CXK3V');
+  </script>
+
+  <!-- Schema.org Article -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "{{TITLE}}",
+    "description": "{{DESCRIPTION}}",
+    "datePublished": "{{DATE_ISO}}",
+    "dateModified": "{{DATE_ISO}}",
+    "author": {
+      "@type": "Person",
+      "name": "רו\"ח יניב ברשף"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "ברשף רואי חשבון",
+      "logo": { "@type": "ImageObject", "url": "https://barshaf-cpa.com/logo.png" }
+    },
+    "mainEntityOfPage": "https://barshaf-cpa.com/blog/{{SLUG}}.html"
+  }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    @font-face {
+      font-family: 'almoni-dl-aaa-300';
+      src: url('https://static.parastorage.com/fonts/v2/5b763edb-ddf0-42b5-bdb6-ad597cac5246/v1/almoni-dl-aaa-300.woff2') format('woff2');
+      font-weight: 300; font-display: swap;
+    }
+    @font-face {
+      font-family: 'almoni-dl-aaa-400';
+      src: url('https://static.parastorage.com/fonts/v2/76d80fe4-b79d-4bef-a3db-00137d89108f/v1/almoni-dl-aaa-400.woff2') format('woff2');
+      font-weight: 400; font-display: swap;
+    }
+    @font-face {
+      font-family: 'almoni-dl-aaa-700';
+      src: url('https://static.parastorage.com/fonts/v2/70866fe5-6b83-4766-9492-72b6a07a286c/v1/almoni-dl-aaa-700.woff2') format('woff2');
+      font-weight: 400; font-display: swap;
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root { --gold: #BF9B30; --dark: #1B1B1E; }
+    html { scroll-behavior: smooth; }
+    body { direction: rtl; background: var(--dark); color: #fff; }
+
+    /* ── Navbar ── */
+    #navbar {
+      position: fixed; top: 0; width: 100%; z-index: 999;
+      padding: 16px 0; display: flex; justify-content: center;
+      background: rgba(27,27,30,0.97);
+    }
+    #navbar a {
+      font-family: 'almoni-dl-aaa-300', sans-serif;
+      font-size: 22px; font-weight: 400; color: #fff;
+      text-decoration: none; padding: 4px 16px;
+    }
+    #navbar a.home-link { color: var(--gold); }
+
+    /* ── Article header ── */
+    .article-header {
+      background: var(--gold);
+      padding: 110px 40px 60px;
+      text-align: right;
+    }
+
+    .article-breadcrumb {
+      font-family: 'almoni-dl-aaa-300', sans-serif;
+      font-size: 14px; color: rgba(0,0,0,0.55);
+      margin-bottom: 20px;
+    }
+    .article-breadcrumb a { color: rgba(0,0,0,0.55); text-decoration: none; }
+    .article-breadcrumb a:hover { text-decoration: underline; }
+
+    .article-title {
+      font-family: 'almoni-dl-aaa-700', sans-serif;
+      font-size: 52px; color: #000;
+      line-height: 1.2; max-width: 820px;
+    }
+
+    .article-meta {
+      font-family: 'almoni-dl-aaa-300', sans-serif;
+      font-size: 15px; color: rgba(0,0,0,0.6);
+      margin-top: 18px;
+    }
+
+    /* ── Article body ── */
+    .article-body {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 60px 40px 100px;
+    }
+
+    .article-body h2 {
+      font-family: 'almoni-dl-aaa-700', sans-serif;
+      font-size: 30px; color: var(--gold);
+      margin: 48px 0 16px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid rgba(191,155,48,0.3);
+    }
+
+    .article-body h3 {
+      font-family: 'almoni-dl-aaa-400', sans-serif;
+      font-size: 22px; color: #fff;
+      margin: 32px 0 12px;
+    }
+
+    .article-body p {
+      font-family: 'almoni-dl-aaa-300', sans-serif;
+      font-size: 18px; line-height: 32px;
+      color: rgba(255,255,255,0.85);
+      margin-bottom: 20px;
+    }
+
+    .article-body ul, .article-body ol {
+      margin: 16px 0 20px 0;
+      padding-right: 24px;
+    }
+
+    .article-body li {
+      font-family: 'almoni-dl-aaa-300', sans-serif;
+      font-size: 18px; line-height: 32px;
+      color: rgba(255,255,255,0.85);
+      margin-bottom: 8px;
+    }
+
+    .article-body strong {
+      font-family: 'almoni-dl-aaa-700', sans-serif;
+      color: #fff;
+    }
+
+    /* ── Highlight box ── */
+    .highlight-box {
+      background: rgba(191,155,48,0.12);
+      border-right: 4px solid var(--gold);
+      padding: 20px 24px;
+      margin: 28px 0;
+      border-radius: 2px;
+    }
+    .highlight-box p {
+      margin-bottom: 0;
+      color: rgba(255,255,255,0.9);
+    }
+
+    /* ── Source box ── */
+    .sources-box {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 20px 24px;
+      margin-top: 48px;
+      border-radius: 2px;
+    }
+    .sources-box h4 {
+      font-family: 'almoni-dl-aaa-400', sans-serif;
+      font-size: 15px; color: rgba(255,255,255,0.5);
+      margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px;
+    }
+    .sources-box ul {
+      padding-right: 0; list-style: none;
+    }
+    .sources-box li {
+      font-family: 'almoni-dl-aaa-300', sans-serif;
+      font-size: 14px; color: rgba(255,255,255,0.4);
+      margin-bottom: 4px;
+    }
+    .sources-box li::before { content: "◾ "; }
+
+    /* ── CTA ── */
+    .article-cta {
+      background: var(--gold);
+      padding: 40px; margin-top: 60px;
+      border-radius: 4px; text-align: center;
+    }
+    .article-cta h3 {
+      font-family: 'almoni-dl-aaa-700', sans-serif;
+      font-size: 28px; color: #000; margin-bottom: 12px;
+    }
+    .article-cta p {
+      font-family: 'almoni-dl-aaa-300', sans-serif;
+      font-size: 18px; color: #000; margin-bottom: 22px;
+    }
+    .article-cta a {
+      display: inline-block;
+      background: #000; color: #fff;
+      font-family: 'almoni-dl-aaa-400', sans-serif;
+      font-size: 18px; padding: 12px 36px;
+      text-decoration: none; border-radius: 2px;
+      transition: opacity 0.2s;
+    }
+    .article-cta a:hover { opacity: 0.8; }
+
+    /* ── Footer ── */
+    footer {
+      background: #111113; padding: 24px 60px;
+      display: flex; justify-content: space-between;
+      align-items: center; flex-wrap: wrap; gap: 16px;
+    }
+    .footer-copy {
+      font-family: 'Raleway', sans-serif;
+      font-size: 14px; color: rgba(255,255,255,0.5);
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 700px) {
+      .article-title { font-size: 34px; }
+      .article-body { padding: 40px 20px 70px; }
+      .article-header { padding: 90px 20px 40px; }
+      footer { padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav id="navbar">
+    <a href="/" class="home-link">ראשי</a>
+    <a href="/#services">שירותים</a>
+    <a href="/#about">אודות</a>
+    <a href="/#contact">צור קשר</a>
+    <a href="/blog/" style="text-decoration:underline;">מאמרים</a>
+  </nav>
+
+  <header class="article-header">
+    <p class="article-breadcrumb">
+      <a href="/">ברשף רואי חשבון</a> ← <a href="/blog/">מאמרים</a> ← {{TITLE}}
+    </p>
+    <h1 class="article-title">{{TITLE}}</h1>
+    <p class="article-meta">מאת רו"ח יניב ברשף &nbsp;|&nbsp; {{DATE_HE}}</p>
+  </header>
+
+  <article class="article-body">
+
+    {{CONTENT}}
+
+    <div class="sources-box">
+      <h4>מקורות ובסיס חוקי</h4>
+      <ul>
+        {{SOURCES}}
+      </ul>
+    </div>
+
+    <div class="article-cta">
+      <h3>יש שאלות? אנחנו כאן</h3>
+      <p>צרו קשר עם משרד ברשף רואי חשבון לייעוץ מקצועי אישי</p>
+      <a href="/#contact">צרו קשר</a>
+    </div>
+
+  </article>
+
+  <footer>
+    <p class="footer-copy">© 2017 Barshaf C.P.A. | <a href="/" style="color:var(--gold);text-decoration:none;">barshaf-cpa.com</a></p>
+  </footer>
+
+  <script src="https://cdn.enable.co.il/licenses/enable-L20572fwk9j7036p-0623-47042/init.js"></script>
+
+</body>
+</html>

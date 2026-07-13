@@ -1,0 +1,29 @@
+# פריסת פרודקשן לשרת המשרד.
+# הרצה:  docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+#
+# ההבדלים מפיתוח:
+#   - restart: unless-stopped  (עולה אוטומטית אחרי הפעלה מחדש של השרת)
+#   - ללא mount של קוד / hot-reload
+#   - PostgreSQL ו-MinIO לא חשופים החוצה (רק רשת פנימית של Docker)
+services:
+  db:
+    restart: unless-stopped
+    ports: []   # לא לחשוף 5432 — גישה רק מהבקאנד
+
+  minio:
+    restart: unless-stopped
+    ports:
+      - "9001:9001"   # קונסולת ניהול בלבד (אופציונלי) — אפשר להסיר
+
+  backend:
+    restart: unless-stopped
+    volumes: []   # ללא mount של קוד בפרודקשן
+    command: >
+      sh -c "alembic upgrade head &&
+             python -m app.seed &&
+             uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 2"
+
+  frontend:
+    restart: unless-stopped
+    volumes: []
+    command: sh -c "npm run build && npm run start"
