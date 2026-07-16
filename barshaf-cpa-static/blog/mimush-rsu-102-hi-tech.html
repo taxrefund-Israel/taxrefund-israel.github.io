@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>מימשתם RSU או RS של חברת האם? כך מחשבים את המס – ברשף רואי חשבון</title>
+  <meta name="description" content="מדריך למיסוי מימוש RSU ו-RS לעובדי הייטק: מסלול 102 ההוני, האם מניות של חברה אמריקאית כשירות, מלכודת מס היסף ואיך להימנע מחוב בהגשת הדוח.">
+  <link rel="icon" type="image/png" href="../favicon.png">
+  <link rel="canonical" href="https://barshaf-cpa.com/blog/mimush-rsu-102-hi-tech.html">
+
+  <!-- Google Analytics 4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-5XJ72CXK3V"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-5XJ72CXK3V');
+  </script>
+
+  <!-- Schema.org Article -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "מימשתם מניות חסומות (RSU או RS) של חברת האם? כך מחשבים את המס",
+    "description": "מדריך למיסוי מימוש RSU ו-RS לעובדי הייטק: מסלול 102 ההוני, כשירות מניות של חברה אמריקאית, ומלכודת מס היסף.",
+    "datePublished": "2026-07-16",
+    "dateModified": "2026-07-16",
+    "author": { "@type": "Person", "name": "רו\"ח יניב ברשף" },
+    "publisher": {
+      "@type": "Organization",
+      "name": "ברשף רואי חשבון",
+      "logo": { "@type": "ImageObject", "url": "https://barshaf-cpa.com/logo.png" }
+    },
+    "mainEntityOfPage": "https://barshaf-cpa.com/blog/mimush-rsu-102-hi-tech.html"
+  }
+  </script>
+
+  <!-- Schema.org FAQPage -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {"@type":"Question","name":"RSU או RS של חברה אמריקאית — האם זה נחשב 102?","acceptedAnswer":{"@type":"Answer","text":"כן. מה שקובע את הזכאות למסלול 102 הוא זהות מקבל ההקצאה ולא זהות המניה. עובד של החברה הישראלית שמקבל מניות של חברת האם הזרה כשיר למסלול 102 ההוני בדיוק כמו מניות של חברה ישראלית."}},
+      {"@type":"Question","name":"מתי חל אירוע המס על מניות במסלול 102?","acceptedAnswer":{"@type":"Answer","text":"במכירת המניות או בהוצאתן מהנאמן — לפי המוקדם. אין אירוע מס בהבשלה (vesting) ולא במימוש כל עוד המניות מוחזקות אצל הנאמן."}},
+      {"@type":"Question","name":"הברוקר ניכה 25% — סיימתי עם המס?","acceptedAnswer":{"@type":"Answer","text":"לא בהכרח. לא כל מנכה מנכה במקור את רכיב מס היסף על רווחי הון, וההפרש עלול לצוף כחוב שמתגלה רק בהגשת הדוח השנתי."}},
+      {"@type":"Question","name":"שכיר עם שכר גבוה בלי מניות — חייב בדוח?","acceptedAnswer":{"@type":"Answer","text":"כן. הכנסה חייבת מעל תקרת מס היסף (721,560 ₪ נכון ל-2025 ו-2026) מחייבת הגשת דוח שנתי, גם אם כל ההכנסה היא שכר."}},
+      {"@type":"Question","name":"מימשתי מניות — זה בהכרח כאב ראש?","acceptedAnswer":{"@type":"Answer","text":"בדרך כלל מדובר בהגשת דוח שנתי, ולא אחת הדוח מסתיים דווקא בהחזר מס ששולם ביתר."}}
+    ]
+  }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    @font-face { font-family:'almoni-dl-aaa-300'; src:url('https://static.parastorage.com/fonts/v2/5b763edb-ddf0-42b5-bdb6-ad597cac5246/v1/almoni-dl-aaa-300.woff2') format('woff2'); font-weight:300; font-display:swap; }
+    @font-face { font-family:'almoni-dl-aaa-400'; src:url('https://static.parastorage.com/fonts/v2/76d80fe4-b79d-4bef-a3db-00137d89108f/v1/almoni-dl-aaa-400.woff2') format('woff2'); font-weight:400; font-display:swap; }
+    @font-face { font-family:'almoni-dl-aaa-700'; src:url('https://static.parastorage.com/fonts/v2/70866fe5-6b83-4766-9492-72b6a07a286c/v1/almoni-dl-aaa-700.woff2') format('woff2'); font-weight:400; font-display:swap; }
+
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    :root { --gold:#BF9B30; --dark:#1B1B1E; }
+    html { scroll-behavior:smooth; }
+    body { direction:rtl; background:var(--dark); color:#fff; }
+
+    #navbar { position:fixed; top:0; width:100%; z-index:999; padding:16px 0; display:flex; justify-content:center; background:rgba(27,27,30,0.97); }
+    #navbar a { font-family:'almoni-dl-aaa-300',sans-serif; font-size:22px; font-weight:400; color:#fff; text-decoration:none; padding:4px 16px; }
+    #navbar a.home-link { color:var(--gold); }
+
+    .article-header { background:var(--gold); padding:110px 40px 60px; text-align:right; }
+    .article-breadcrumb { font-family:'almoni-dl-aaa-300',sans-serif; font-size:14px; color:rgba(0,0,0,0.55); margin-bottom:20px; }
+    .article-breadcrumb a { color:rgba(0,0,0,0.55); text-decoration:none; }
+    .article-breadcrumb a:hover { text-decoration:underline; }
+    .article-title { font-family:'almoni-dl-aaa-700',sans-serif; font-size:48px; color:#000; line-height:1.2; max-width:820px; }
+    .article-meta { font-family:'almoni-dl-aaa-300',sans-serif; font-size:15px; color:rgba(0,0,0,0.6); margin-top:18px; }
+
+    .article-body { max-width:820px; margin:0 auto; padding:60px 40px 100px; }
+    .article-body h2 { font-family:'almoni-dl-aaa-700',sans-serif; font-size:30px; color:var(--gold); margin:48px 0 16px; padding-bottom:8px; border-bottom:2px solid rgba(191,155,48,0.3); }
+    .article-body p { font-family:'almoni-dl-aaa-300',sans-serif; font-size:18px; line-height:32px; color:rgba(255,255,255,0.85); margin-bottom:20px; }
+    .article-body ul { margin:16px 0 20px 0; padding-right:24px; }
+    .article-body li { font-family:'almoni-dl-aaa-300',sans-serif; font-size:18px; line-height:32px; color:rgba(255,255,255,0.85); margin-bottom:8px; }
+    .article-body strong { font-family:'almoni-dl-aaa-700',sans-serif; color:#fff; }
+    .article-body a { color:var(--gold); }
+    .article-lede { font-family:'almoni-dl-aaa-400',sans-serif !important; font-size:21px !important; line-height:36px !important; color:#fff !important; }
+
+    .table-scroll { overflow-x:auto; margin:24px 0; }
+    .tax-table { width:100%; border-collapse:collapse; font-family:'almoni-dl-aaa-300',sans-serif; }
+    .tax-table th { background:rgba(191,155,48,0.2); font-family:'almoni-dl-aaa-700',sans-serif; font-size:16px; color:#fff; padding:12px 16px; text-align:right; border-bottom:2px solid rgba(191,155,48,0.4); }
+    .tax-table td { font-size:17px; color:rgba(255,255,255,0.82); padding:11px 16px; text-align:right; border-bottom:1px solid rgba(255,255,255,0.07); font-variant-numeric:tabular-nums; }
+    .tax-table tr:last-child td { border-bottom:none; }
+    .tax-table tr:hover td { background:rgba(255,255,255,0.03); }
+    .tax-table td:last-child { color:var(--gold); font-family:'almoni-dl-aaa-700',sans-serif; }
+
+    .highlight-box { background:rgba(191,155,48,0.12); border-right:4px solid var(--gold); padding:20px 24px; margin:28px 0; border-radius:2px; }
+    .highlight-box p { margin-bottom:0; color:rgba(255,255,255,0.9); }
+    .highlight-box p + p { margin-top:12px; }
+
+    .sources-box { background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); padding:20px 24px; margin-top:48px; border-radius:2px; }
+    .sources-box h4 { font-family:'almoni-dl-aaa-400',sans-serif; font-size:15px; color:rgba(255,255,255,0.5); margin-bottom:10px; text-transform:uppercase; letter-spacing:1px; }
+    .sources-box ul { padding-right:0; list-style:none; margin:0; }
+    .sources-box li { font-family:'almoni-dl-aaa-300',sans-serif; font-size:14px; line-height:24px; color:rgba(255,255,255,0.4); margin-bottom:4px; }
+    .sources-box li::before { content:"◾ "; }
+    .disclaimer { font-family:'almoni-dl-aaa-300',sans-serif; font-size:13px; line-height:22px; color:rgba(255,255,255,0.35); margin-top:20px; }
+
+    .article-cta { background:var(--gold); padding:40px; margin-top:60px; border-radius:4px; text-align:center; }
+    .article-cta h3 { font-family:'almoni-dl-aaa-700',sans-serif; font-size:28px; color:#000; margin-bottom:12px; }
+    .article-cta p { font-family:'almoni-dl-aaa-300',sans-serif; font-size:18px; color:#000; margin-bottom:22px; }
+    .article-cta a.cta-btn { display:inline-block; background:#000; color:#fff; font-family:'almoni-dl-aaa-400',sans-serif; font-size:18px; padding:12px 36px; text-decoration:none; border-radius:2px; transition:opacity 0.2s; }
+    .article-cta a.cta-btn:hover { opacity:0.8; }
+    .cta-secondary { font-family:'almoni-dl-aaa-300',sans-serif; font-size:15px; color:rgba(0,0,0,0.75); margin:18px 0 0 !important; }
+    .cta-secondary a { color:#000; }
+
+    a:focus-visible { outline:2px solid var(--gold); outline-offset:3px; }
+    @media (prefers-reduced-motion:reduce){ html{scroll-behavior:auto;} *{transition:none !important;} }
+
+    footer { background:#111113; padding:24px 60px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; }
+    .footer-copy { font-family:'Raleway',sans-serif; font-size:14px; color:rgba(255,255,255,0.5); }
+
+    @media (max-width:700px){ .article-title{font-size:32px;} .article-body{padding:40px 20px 70px;} .article-header{padding:90px 20px 40px;} footer{padding:20px;} }
+  </style>
+</head>
+<body>
+
+  <nav id="navbar">
+    <a href="/" class="home-link">ראשי</a>
+    <a href="/#services">שירותים</a>
+    <a href="/#about">אודות</a>
+    <a href="/#contact">צור קשר</a>
+    <a href="/blog/" style="text-decoration:underline;">מאמרים</a>
+  </nav>
+
+  <header class="article-header">
+    <p class="article-breadcrumb">
+      <a href="/">ברשף רואי חשבון</a> ← <a href="/blog/">מאמרים</a> ← מימוש RSU ו-102
+    </p>
+    <h1 class="article-title">מימשתם מניות חסומות (RSU או RS) של חברת האם? כך מחשבים את המס — ואיך לא להיתקע עם חוב</h1>
+    <p class="article-meta">מאת רו"ח יניב ברשף &nbsp;|&nbsp; 16 ביולי 2026</p>
+  </header>
+
+  <article class="article-body">
+
+    <p class="article-lede">קיבלתם RSU או RS של חברת האם האמריקאית, המניות הבשילו, ומכרתם. עכשיו מגיעה השאלה שאף אחד לא הכין אתכם אליה: כמה מס אתם באמת חייבים, מתי, ואיך לא למצוא את עצמכם עם חוב לא צפוי כשמגישים את הדוח השנתי.</p>
+
+    <div class="highlight-box">
+      <p>משרד ברשף רואי חשבון מלווה כבר שנים שכירים בכירים בתעשיית ההייטק — עובדים בחברות ציבוריות הנסחרות בבורסות בחו"ל, מנהלים ובכירים שמימשו אופציות ומניות חסומות, ועובדי סטארט-אפ שמימשו מניות בסבב סקנדרי. אנחנו מכירים מקרוב את אירועי המס שנוצרים במימוש, את הדיווח הנדרש בדוח השנתי, ואת נקודות התכנון שחוסכות מס אמיתי.</p>
+    </div>
+
+    <p>ולפני שנצלול, נקודה שרבים מגלים באיחור: <strong>עצם ההכנסה מעל תקרת מס היסף — 721,560 ₪ — מחייבת <a href="/blog/shachir-sachar-gavoha-doch.html">בהגשת דוח שנתי</a></strong>, גם אם כולה שכר "רגיל" בלי מימוש מניות כלל. מי שחוצה את הרף מאבד את הפטור האוטומטי מהגשת דוח. מימוש המניות רק מוסיף שכבה נוספת.</p>
+
+    <p>בין אם קיבלתם RSU (יחידות שמתגבשות למניה בהבשלה) ובין אם RS (מניות חסומות ממש) — שני הסוגים כשירים למסלול 102 ההוני, והעקרונות שכאן חלים על שניהם.</p>
+
+    <h2>קודם כול — מה זה בכלל מסלול 102 ההוני</h2>
+
+    <p>רוב התגמול ההוני לעובדים בישראל מוקצה תחת <strong>סעיף 102 לפקודה, במסלול ההוני עם נאמן</strong>. זה המסלול שמעניק את הטבת המס המשמעותית, והוא עובד כך:</p>
+
+    <ul>
+      <li><strong>אין אירוע מס בהבשלה (vesting) ולא במימוש</strong> — כל עוד המניות מוחזקות אצל הנאמן. אירוע המס נדחה עד ל<strong>מכירה בפועל</strong>, או עד להוצאת המניות מהנאמן — לפי המוקדם.</li>
+      <li><strong>רכיב רווח ההון ממוסה ב-25%</strong> שיעור קבוע, ולא לפי מדרגת המס השולי שלכם.</li>
+    </ul>
+
+    <p>בחברה נסחרת — וזה בדיוק המצב שלכם — קיים גם <strong>רכיב "הכנסת עבודה"</strong>: חלק מהשווי ממוסה בשיעור המס השולי, והיתרה (עליית הערך) ממוסה כרווח הון ב-25%. הפיצול המדויק בין שני הרכיבים נקבע לפי כללי הסעיף ותלוי בנתוני ההקצאה — זו נקודה שכדאי לבדוק פרטנית, כי היא משפיעה ישירות על גובה המס.</p>
+
+    <div class="highlight-box">
+      <p><strong>שני תנאים שחשוב להכיר — תקופת חסימה של 24 חודשים.</strong> המסלול ההוני מותנה בהחזקת המניות אצל הנאמן לתקופת חסימה של 24 חודשים. מכירה לפני תום התקופה שוללת את ההטבה — וכל השווי מסווג מחדש כהכנסת עבודה בשיעור שולי.</p>
+      <p><strong>בעל שליטה מוחרג.</strong> מי שמחזיק 10% ומעלה אינו זכאי למסלול ההוני, ומיסויו נעשה בשיעור שולי לפי סעיף 3(ט).</p>
+    </div>
+
+    <h2>הטעות שאנחנו רואים הכי הרבה: "המניה אמריקאית, אז אני לא ב-102"</h2>
+
+    <p>זו תפיסה נפוצה, והיא שגויה. עובדים רבים בטוחים שמכיוון שהמניה היא של חברה אמריקאית — אפל, ברודקום, גוגל — הם מחוץ למסלול 102. <strong>לא נכון.</strong></p>
+
+    <p>מה שקובע את הזכאות ל-102 אינו זהות המניה, אלא <strong>זהות מקבל ההקצאה</strong>: אם אתם עובדים של החברה הישראלית, הקצאת מניות של חברת האם הזרה כשירה למסלול 102 ההוני בדיוק כמו מניות של חברה ישראלית. הטיפול זהה — דחיית המס עד המכירה, 25% על רכיב רווח ההון.</p>
+
+    <p>ההסתייגות שמופיעה לעיתים בספרות — ש"הקצאה של חברה זרה אינה כשירה" — מתייחסת למקרה אחר לגמרי: מקבל שאינו עובד של החברה הישראלית. עצם היות המניה זרה אינו פוסל דבר.</p>
+
+    <h2>ומה אם המניות לא הוקצו תחת 102?</h2>
+
+    <p>קורה. אם ההקצאה לא נעשתה במסלול 102 עם נאמן, התמונה שונה לחלוטין:</p>
+
+    <ul>
+      <li><strong>אירוע המס חל כבר בהבשלה</strong> (vesting), לא במכירה.</li>
+      <li>שווי המניות במועד ההבשלה חייב כ<strong>הכנסת עבודה בשיעור שולי</strong> — לא 25%.</li>
+      <li>מכירה מאוחרת יותר היא אירוע רווח הון <strong>נפרד</strong>, על עליית הערך שמעבר לשווי בהבשלה בלבד.</li>
+    </ul>
+
+    <p>ההבדל בין שני המצבים יכול להיות עשרות אחוזי מס. לכן השאלה הראשונה שצריך לברר על כל הקצאה היא באיזה מסלול היא נעשתה.</p>
+
+    <h2>המלכודת של מס יסף — כאן נוצרים החובות</h2>
+
+    <p>מי שהכנסתו החייבת עוברת את הרף של <strong>721,560 ₪</strong> (התקרה נכון לשנות המס 2025 ו-2026) חייב במס יסף בשיעור <strong>3%</strong> על ההכנסה שמעל הרף — מכל מקור, כולל רווח ההון ממימוש המניות.</p>
+
+    <p>יש גם תוספת של 2% (סה"כ 5%), אבל — וזו נקודה שרבים טועים בה — היא חלה <strong>רק על רווח הון שעולה בפני עצמו על 721,560 ₪ בשנה</strong>. כלומר: על רווח הון עד הסכום הזה המס האפקטיבי הוא 25% + 3% = <strong>28%</strong>; רק שכבת הרווח שמעל 721,560 ₪ מגיעה ל-30%. מי שמימש מניות ברווח של מאות אלפי שקלים — ברוב המקרים בשיעור 28%, לא 30%.</p>
+
+    <p>וכפי שצוין למעלה — עצם המעבר את הרף הזה יוצר גם את <strong>חובת הגשת הדוח השנתי</strong>, בין אם ההכנסה שמעליו היא רווח הון ובין אם היא שכר בלבד.</p>
+
+    <p>וכאן נמצאת הנקודה שהכי הרבה אנשים נופלים בה: <strong>לא כל מנכה מנכה את רכיב מס היסף על רווחי הון.</strong> הנאמן או המעסיק מנכה במקור את ה-25%, אבל את התוספת של מס היסף — לא תמיד. ההפרש לא נעלם; הוא צף כ<strong>חוב שמתגלה רק בהגשת הדוח השנתי</strong>.</p>
+
+    <div class="table-scroll">
+      <table class="tax-table">
+        <thead><tr><th>שלב</th><th>סכום</th></tr></thead>
+        <tbody>
+          <tr><td>שכר שנתי</td><td>כבר מעל הרף (721,560 ₪)</td></tr>
+          <tr><td>רווח הון ריאלי ממכירת המניות</td><td>300,000 ₪</td></tr>
+          <tr><td>מס רווח הון שנוכה במקור (25%)</td><td>75,000 ₪</td></tr>
+          <tr><td>מס יסף 3% על הרווח — לא נוכה</td><td>9,000 ₪</td></tr>
+          <tr><td>החוב שמתגלה בהגשת הדוח</td><td>9,000 ₪</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="highlight-box">
+      <p><strong>מה עושים עם זה.</strong> אפשר להקדים ולשלם את מס היסף מראש. <strong>תשלום עד 31 בינואר של השנה העוקבת</strong> נחשב כאילו שולם בתום שנת המס — ולכן חוסך את הפרשי ההצמדה והריבית שנצברים על חוב שמשולם מאוחר יותר. מי שיודע שמימש מניות בסכום משמעותי, ושמס היסף לא נוכה במלואו, עדיף לו לשלם את ההפרש עוד לפני ההגשה.</p>
+    </div>
+
+    <h2>ולא אחת — דווקא יוצא מזה החזר</h2>
+
+    <p>נזכיר שחובת הדוח נובעת מעצם ההכנסה הגבוהה — כל שכיר שהכנסתו עוברת את תקרת מס היסף <a href="/blog/shachir-sachar-gavoha-doch.html">חייב בהגשת דוח שנתי</a>, גם בלי מימוש מניות. ורבים חוששים שנפתחה מולם התנהלות ביורוקרטית מסובכת. בפועל, בדרך כלל מדובר ב<strong>הגשת דוח שנתי בלבד</strong> — ולא אחת הדוח הזה מתברר כמשתלם דווקא לטובתכם, כשהוא חושף מס ששולם ביתר ומוביל להחזר. <a href="https://simulator.barshaf-cpa.com/">סימולטור החזר המס</a> ייתן לכם אינדיקציה ראשונית תוך כמה דקות.</p>
+
+    <h2>מתי כדאי לפנות אלינו</h2>
+
+    <p>מימוש RSU של חברה נסחרת נראה פשוט מבחוץ — מכרתם, קיבלתם כסף — אבל מתחתיו יושבים מסלול ההקצאה, הפיצול בין הכנסת עבודה לרווח הון, ומס היסף שלא נוכה. כל אחד מהם יכול להיות ההבדל בין החזר לבין חוב. ואם לצד המניות מהעבודה יש לכם גם תיק מסחר, ייתכן שאפשר <a href="/blog/kizuz-hefsedim-shuk-hahon.html">לקזז הפסדים בשוק ההון</a> ולהקטין עוד את המס.</p>
+
+    <p>אנחנו עושים את זה כל יום, לעובדי מרכזי הפיתוח של החברות הגדולות. אם מימשתם השנה — או שאתם צפויים לממש — כדאי לבדוק את התמונה לפני ההגשה ולא אחריה.</p>
+
+    <div class="sources-box">
+      <h4>מקורות ובסיס חוקי</h4>
+      <ul>
+        <li>סעיף 102 לפקודת מס הכנסה — מיסוי הקצאת מניות ואופציות לעובדים</li>
+        <li>סעיף 3(ט) לפקודה — הקצאה שלא במסלול 102</li>
+        <li>סעיף 121ב לפקודה — מס יסף</li>
+        <li>לוח עזר לניכוי מס ממשכורת, רשות המסים — שנת 2025</li>
+      </ul>
+      <p class="disclaimer">אין באמור ייעוץ מס או תחליף לייעוץ פרטני. הנתונים נכונים למועד העדכון של המאמר, ויש לבחון כל מקרה לגופו.</p>
+    </div>
+
+    <div class="article-cta">
+      <h3>מימשתם מניות השנה?</h3>
+      <p>בדיקת מיסוי המימוש לפני ההגשה — כדי שלא תתקעו עם חוב מיותר</p>
+      <a class="cta-btn" href="/#contact">צרו קשר</a>
+      <p class="cta-secondary">או התחילו עם <a href="https://simulator.barshaf-cpa.com/">סימולטור החזר המס</a></p>
+    </div>
+
+  </article>
+
+  <footer>
+    <p class="footer-copy">© 2017 Barshaf C.P.A. | <a href="/" style="color:var(--gold);text-decoration:none;">barshaf-cpa.com</a></p>
+  </footer>
+
+  <script src="https://cdn.enable.co.il/licenses/enable-L20572fwk9j7036p-0623-47042/init.js"></script>
+
+</body>
+</html>
