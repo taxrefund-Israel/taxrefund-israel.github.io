@@ -17,10 +17,6 @@ if(location.hostname==='taxrefund-israel.github.io'){
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="dns-prefetch" href="https://formsubmit.co">
 
-<!-- Google AdSense -->
-<meta name="google-adsense-account" content="ca-pub-6410075502691348">
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6410075502691348" crossorigin="anonymous"></script>
-
 <!-- Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-GNWQ42K66R"></script>
 <script>
@@ -782,9 +778,7 @@ html.gs-mode{filter:grayscale(100%)}
   </div>
 </footer>
 
-<!-- Scripts -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" integrity="sha384-/1qUCSGwTur9vjf/z9lmu/eCUYbpOTgSjmpbMQZ1/CtX2v/WcAIKqRv+U1DUCG6e" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+<!-- Scripts — pdf.js ו-tesseract נטענים בעצלתיים רק בעת העלאת קובץ (ראו ensurePdfjs / ensureTesseract) -->
 
 <!-- ── Accessibility widget JS ── -->
 <script>
@@ -855,11 +849,36 @@ document.addEventListener('DOMContentLoaded',()=>A11y.init());
 <!-- ── Main App ── -->
 <script>
 
-(function(){
-  const workerUrl='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-  try{const blob=new Blob([`importScripts('${workerUrl}')`],{type:'application/javascript'});pdfjsLib.GlobalWorkerOptions.workerSrc=URL.createObjectURL(blob);}
-  catch(e){pdfjsLib.GlobalWorkerOptions.workerSrc=workerUrl;}
-})();
+// ─── Lazy loaders: pdf.js + tesseract נטענים רק בעת העלאת קובץ ──────────────
+const _scriptCache={};
+function loadScriptOnce(src,attrs){
+  if(_scriptCache[src])return _scriptCache[src];
+  _scriptCache[src]=new Promise((resolve,reject)=>{
+    const s=document.createElement('script');
+    s.src=src;
+    if(attrs){for(const k in attrs)s.setAttribute(k,attrs[k]);}
+    s.onload=()=>resolve();
+    s.onerror=()=>{delete _scriptCache[src];reject(new Error('load failed: '+src));};
+    document.head.appendChild(s);
+  });
+  return _scriptCache[src];
+}
+let _pdfjsReady;
+function ensurePdfjs(){
+  if(_pdfjsReady)return _pdfjsReady;
+  _pdfjsReady=loadScriptOnce('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js',{integrity:'sha384-/1qUCSGwTur9vjf/z9lmu/eCUYbpOTgSjmpbMQZ1/CtX2v/WcAIKqRv+U1DUCG6e',crossorigin:'anonymous'}).then(()=>{
+    const workerUrl='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    try{const blob=new Blob([`importScripts('${workerUrl}')`],{type:'application/javascript'});pdfjsLib.GlobalWorkerOptions.workerSrc=URL.createObjectURL(blob);}
+    catch(e){pdfjsLib.GlobalWorkerOptions.workerSrc=workerUrl;}
+  });
+  return _pdfjsReady;
+}
+let _tessReady;
+function ensureTesseract(){
+  if(_tessReady)return _tessReady;
+  _tessReady=loadScriptOnce('https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js');
+  return _tessReady;
+}
 
 const TAX={
   // מדרגות מס להכנסה מיגיעה אישית — מקור: כל זכות (אומת מהפרסומים הרשמיים)
@@ -1182,6 +1201,7 @@ function degCredit(type,gy,hasInt,intEnd,ty){
 
 // ─── OCR & Parse ─────────────────────────────────────────────────────────────
 async function extractPdfText(file){
+  await ensurePdfjs();
   const buf=await file.arrayBuffer();
   const pdf=await pdfjsLib.getDocument({data:buf}).promise;
   let allLines=[];
@@ -1216,6 +1236,7 @@ function compressImg(file){return new Promise(res=>{
 async function extractImgText(file){
   const dataUrl=await compressImg(file);if(!dataUrl)return'';
   addLog('מפעיל OCR...');
+  await ensureTesseract();
   const worker=await Tesseract.createWorker(['heb','eng'],1,{logger:m=>{
     if(m.status==='recognizing text')addLog(`OCR: ${Math.round(m.progress*100)}%`);}});
   const{data:{text}}=await worker.recognize(dataUrl);
