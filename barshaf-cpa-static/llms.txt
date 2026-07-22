@@ -1,0 +1,34 @@
+# ברשף רואי חשבון (Barshaf CPA)
+
+> משרד רואי חשבון בראשון לציון בהובלת רו"ח יניב ברשף (לשעבר KPMG). ייעוץ מס, החזרי מס לשכירים, ליווי עצמאים וחברות וליווי רכישת עסקים. שירות דיגיטלי בכל הארץ.
+
+## כלים דיגיטליים
+- [סימולטור החזר מס לשכירים](https://simulator.barshaf-cpa.com/): בדיקת זכאות והערכת החזר מס לשנים 2020-2025 מתוך טופס 106, ללא הרשמה
+- [דוח הוצאות נסיעה לחו"ל](https://travel.barshaf-cpa.com/): הפקת דוח הוצאות נסיעה מותאם לתקנות מס הכנסה
+- [בדיקת מקדמות לעצמאי](https://advance.barshaf-cpa.com/): בדיקת אחוז מקדמות מס הכנסה וביטוח לאומי לעצמאים
+
+## מיסוי שכירים בעלי שכר גבוה
+- [שכיר בעל שכר גבוה וחובת הדוח השנתי](https://barshaf-cpa.com/blog/shachir-sachar-gavoha-doch.html): הספים המחייבים בהגשת דוח, מס יסף וחלון ההחזר
+- [מיסוי מימוש RSU ו-102 לעובדי הייטק](https://barshaf-cpa.com/blog/mimush-rsu-102-hi-tech.html): מסלול 102 ההוני, מניות של חברה אמריקאית ומלכודת מס היסף
+- [קיזוז הפסדים בשוק ההון והחזר מס](https://barshaf-cpa.com/blog/kizuz-hefsedim-shuk-hahon.html): סדר הקיזוז בין ברוקרים ובנקים ותביעת מס עודף
+
+## רכישת עסק וכניסה כשותף
+- [מה בודקים לפני רכישת עסק](https://barshaf-cpa.com/blog/bdikot-lifnei-rechishat-esek.html): נורמליזציה של הרווח, התחייבויות נסתרות ועסקת מניות מול נכסים
+- [ליווי רואה חשבון לרכישת עסק](https://barshaf-cpa.com/blog/liuvi-rechishat-esek.html): בדיקה כלכלית לפני רכישת עסק, כניסה כשותף או השקעה
+
+## בחירת רואה חשבון ושירות אונליין
+- [כמה עולה רואה חשבון ומה קובע את המחיר](https://barshaf-cpa.com/blog/kama-ole-roeh-heshbon.html): הגורמים שקובעים מחיר ולמה להיזהר מהצעה זולה מדי
+- [רואה חשבון אונליין](https://barshaf-cpa.com/blog/roeh-heshbon-online.html): איך עובדים עם רואה חשבון דיגיטלי מרחוק
+- [איך בוחרים רואה חשבון](https://barshaf-cpa.com/blog/roeh-heshbon-rishon-letzion.html): מה חשוב לבדוק לפני שחותמים
+
+## החזרי מס, עצמאים ופתיחת עסק
+- [החזר מס לשכירים](https://barshaf-cpa.com/blog/hachzar-mas-sachir.html): מי זכאי וכיצד מגישים, עד שש שנים אחורה
+- [החזר מס בחופשת לידה](https://barshaf-cpa.com/blog/hachzar-mas-chufshat-leda.html): מי זכאית וכמה מגיע
+- [פתיחת עוסק מורשה](https://barshaf-cpa.com/blog/petichat-osek-morsheh.html): רישום נכון בשלוש הרשויות
+- [שינויי מס 2026 לעצמאים](https://barshaf-cpa.com/blog/shinuey-mas-2026-atzmayim.html): מדרגות מס, ביטוח לאומי וחובת הדיווח החדשה
+
+## יצירת קשר
+- אתר: https://barshaf-cpa.com
+- טלפון: 03-9108014
+- דוא"ל: info@barshaf-cpa.com
+- כתובת: רוטשילד 27, ראשון לציון
